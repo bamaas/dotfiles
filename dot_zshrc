@@ -23,12 +23,10 @@ elif [ -x "$HOME/.local/bin/mise" ]; then
   eval "$("$HOME/.local/bin/mise" activate zsh)"
 fi
 
-# Homebrew-provided zsh plugins + oh-my-zsh (macOS); no-op without brew
+# Homebrew autojump + fpath (macOS); no-op without brew
 if command -v brew >/dev/null 2>&1; then
   [ -f "$(brew --prefix)/etc/profile.d/autojump.sh" ] && . "$(brew --prefix)/etc/profile.d/autojump.sh"
   fpath+=("$(brew --prefix)/share/zsh/site-functions")
-  [ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-  [ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 [ -f "$ZSH/oh-my-zsh.sh" ] && source "$ZSH/oh-my-zsh.sh"
 [ -n "$HOMEBREW_PREFIX" ] && PATH="$HOMEBREW_PREFIX/opt/findutils/libexec/gnubin:$PATH"
@@ -76,3 +74,8 @@ export K9S_CONFIG_DIR="$HOME/.config/k9s"
 
 # Starship prompt (installed via mise; cross-OS). Must come after mise is on PATH.
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
+
+# zsh plugins (cloned cross-OS by chezmoi into ~/.local/share/zsh)
+[ -f ~/.local/share/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source ~/.local/share/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+# zsh-syntax-highlighting must be sourced LAST (after all widgets are defined)
+[ -f ~/.local/share/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source ~/.local/share/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
