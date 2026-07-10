@@ -1,3 +1,10 @@
+# Fall back to a known TERM if this terminal's terminfo isn't installed
+# (e.g. TERM=xterm-ghostty inside a container that lacks it) -> fixes broken
+# backspace / arrow keys. No-op where the terminfo exists (e.g. the host).
+if [ -n "$TERM" ] && command -v infocmp >/dev/null 2>&1 && ! infocmp "$TERM" >/dev/null 2>&1; then
+  export TERM=xterm-256color
+fi
+
 # ---- Homebrew / macOS-only (skipped where brew is absent, e.g. Linux containers) ----
 if [ -x "$HOME/.brew/bin/brew" ] || command -v brew >/dev/null 2>&1; then
   [ -x "$HOME/.brew/bin/brew" ] && eval "$(~/.brew/bin/brew shellenv)"
