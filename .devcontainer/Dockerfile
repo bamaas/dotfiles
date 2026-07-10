@@ -22,9 +22,9 @@ ENV PATH=/home/vscode/.local/bin:/home/vscode/.local/share/mise/shims:$PATH
 # Repo becomes chezmoi's source of truth inside the container.
 COPY --chown=vscode:vscode . /home/vscode/git/dotfiles
 
-# ghostty terminfo -> ~/.terminfo, so keys (backspace, etc) work when entering
-# from a ghostty host (TERM=xterm-ghostty, which Debian doesn't ship).
-RUN tic -x /home/vscode/git/dotfiles/.devcontainer/xterm-ghostty.terminfo
+# Note: backspace/keys from a ghostty host (TERM=xterm-ghostty) are handled by
+# the TERM-fallback guard in .zshrc (falls back to xterm-256color when the
+# terminfo is absent). ncurses-bin above provides `infocmp` for that guard.
 
 # 1) chezmoi  2) mise  (chezmoi must exist before mise on real machines; mirror that here)
 RUN sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin" \
