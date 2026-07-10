@@ -1,0 +1,33 @@
+#!/bin/sh
+# Bootstrap a fresh machine:
+#   1. clone this repo to ~/git/dotfiles (if missing)
+#   2. install chezmoi (must exist before mise)
+#   3. chezmoi apply -> places dotfiles + runs the run_once script that
+#      installs mise, which installs all other tools.
+#
+# Usage:  ./setup   (or: sh -c "$(curl -fsSL https://raw.githubusercontent.com/bamaas/dotfiles/main/setup)")
+set -eu
+
+REPO="${DOTFILES_REPO:-https://github.com/bamaas/dotfiles.git}"
+DOTDIR="$HOME/git/dotfiles"
+
+command -v git >/dev/null 2>&1 || { echo "git is required"; exit 1; }
+
+if [ ! -d "$DOTDIR/.git" ]; then
+  mkdir -p "$HOME/git"
+  echo ">> Cloning $REPO -> $DOTDIR"
+  git clone "$REPO" "$DOTDIR"
+fi
+
+if ! command -v chezmoi >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/chezmoi" ]; then
+  echo ">> Installing chezmoi..."
+  sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+fi
+CHEZMOI="$(command -v chezmoi 2>/dev/null || echo "$HOME/.local/bin/chezmoi")"
+
+echo ">> Applying dotfiles..."
+"$CHEZMOI" init --source="$DOTDIR" --apply
+
+echo ">> Done. Restart your shell (or: exec zsh)."
+echo ">> Note: machine-local secrets are NOT in this repo."
+echo "   Recreate ~/.zshrc.local and ~/.config/mise/conf.d/secrets.local.toml as needed."

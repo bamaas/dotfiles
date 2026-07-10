@@ -1,0 +1,49 @@
+[tools]
+# --- lean set: installed everywhere, incl. Linux dev containers ---
+node = "latest"
+neovim = "latest"
+ripgrep = "latest"
+fzf = "latest"
+"github:sharkdp/bat" = "0.26.1"
+eza = "latest"
+zoxide = "latest"
+yq = "4.44.5"
+lazygit = "latest"
+direnv = "2.35.0"
+gh = "latest"
+zellij = "latest"
+{{- if eq .chezmoi.os "darwin" }}
+
+# --- full set: macOS host only (heavy: go/python/terraform/k8s tooling) ---
+argocd = "2.13.1"
+"github:anomalyco/opencode" = "latest"
+go = "1.23.3"
+"go:github.com/DarthSim/hivemind" = "latest"
+gomigrate = "4.18.1"
+k9s = "0.32.7"
+kind = "0.25.0"
+kubectl = "1.29.11"
+kustomize = "latest"
+opencode = "latest"
+fnox = "latest"
+python = "3.13.0"
+sops = "3.9.2"
+terraform = "1.10.1"
+uv = "latest"
+yamllint = "1.37.0"
+yazi = "latest"
+"npm:lean-ctx-bin" = "latest"
+"pipx:commitizen" = "latest"
+poetry = "latest"
+zarf = "latest"
+{{- end }}
+
+[settings]
+experimental = true
+
+[env]
+# Machine-local env (KUBECONFIG, trusted paths, secrets) lives in
+# conf.d/secrets.local.toml — git/chezmoi ignored. Do not add machine paths here.
+HUNT_EDITOR = "nvim"
+HUNT_PREVIEW_SIZE = "50"
+FZF_DEFAULT_OPTS = "--layout=reverse --style full --color=fg:#EFF0EB,header:#FF6AC1,info:#9AEDFE,pointer:#FF6AC1 --color=marker:#5AF78E,fg+:#EFF0EB,prompt:#57C7FF,hl+:#FF6AC1"

@@ -1,0 +1,32 @@
+# Never manage these (secrets, machine-local state, derived/runtime junk)
+
+# repo meta files — belong in the repo, not $HOME
+README.md
+LICENSE
+setup
+
+# secrets (kept local-only, out of the public repo)
+.zshrc.local
+.config/mise/conf.d/secrets.local.toml
+
+# k9s runtime / context-specific state
+.config/k9s/clusters
+.config/k9s/benchmarks
+.config/k9s/screen-dumps
+.config/k9s/k9s.log
+
+# nvim derived state (plugins, base46 cache) — regenerated on first launch
+.local/share/nvim
+
+# editor/tool scratch files
+*.un~
+*.swp
+
+# zsh graveyard — never track (.zshrc.user IS tracked; it holds real aliases/functions)
+.zshrc.bk
+.zshrc.*.bak
+.zshrc.*~
+.zshrc.omz-*
+.zshrc.hunt.bak
+.zshrc.lean-ctx.bak
+.profile.bk

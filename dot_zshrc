@@ -1,0 +1,72 @@
+# ---- Homebrew / macOS-only (skipped where brew is absent, e.g. Linux containers) ----
+if [ -x "$HOME/.brew/bin/brew" ] || command -v brew >/dev/null 2>&1; then
+  [ -x "$HOME/.brew/bin/brew" ] && eval "$(~/.brew/bin/brew shellenv)"
+  [ -n "$HOMEBREW_PREFIX" ] && PATH="$HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnubin:$PATH"
+fi
+
+[[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
+
+export ZSH="$HOME/.oh-my-zsh"
+plugins=(git docker)
+
+autoload -U promptinit; promptinit
+# use the pure prompt only if it's installed
+if prompt -l 2>/dev/null | grep -qw pure; then prompt pure; fi
+
+# mise (tool manager) — activate wherever it lives
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+elif [ -x "$HOME/.local/bin/mise" ]; then
+  eval "$("$HOME/.local/bin/mise" activate zsh)"
+fi
+
+# Homebrew-provided zsh plugins + oh-my-zsh (macOS); no-op without brew
+if command -v brew >/dev/null 2>&1; then
+  [ -f "$(brew --prefix)/etc/profile.d/autojump.sh" ] && . "$(brew --prefix)/etc/profile.d/autojump.sh"
+  fpath+=("$(brew --prefix)/share/zsh/site-functions")
+  [ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  [ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+[ -f "$ZSH/oh-my-zsh.sh" ] && source "$ZSH/oh-my-zsh.sh"
+[ -n "$HOMEBREW_PREFIX" ] && PATH="$HOMEBREW_PREFIX/opt/findutils/libexec/gnubin:$PATH"
+
+# Machine-local secrets/env (Azure creds, etc) — not tracked in dotfiles
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+alias k='kubectl '
+
+export PATH="$HOME/.local/bin:$PATH"
+# macOS-specific tool paths (harmless if absent)
+[ -d "$HOME/.codeium/windsurf/bin" ] && export PATH="$HOME/.codeium/windsurf/bin:$PATH"
+[ -d "$HOME/.dual-graph" ] && export PATH="$PATH:$HOME/.dual-graph"
+
+# fzf key bindings + fuzzy completion
+command -v fzf >/dev/null 2>&1 && source <(fzf --zsh)
+
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
+
+# Hunt (macOS install)
+[ -f "$HOME/.hunt/hunt.sh" ] && source "$HOME/.hunt/hunt.sh"
+
+# lean-ctx shell hook
+[ -f "$HOME/.lean-ctx/shell-hook.zsh" ] && . "$HOME/.lean-ctx/shell-hook.zsh"
+
+# lean-ctx agent aliases
+alias claude='LEAN_CTX_AGENT=1 BASH_ENV="$HOME/.bashenv" claude'
+alias codex='LEAN_CTX_AGENT=1 BASH_ENV="$HOME/.bashenv" codex'
+alias gemini='LEAN_CTX_AGENT=1 BASH_ENV="$HOME/.bashenv" gemini'
+
+[ -f ~/.zshrc.user ] && source ~/.zshrc.user
+
+# Cursor shape: steady bar (small stripe), not block. Works via DECSCUSR.
+_set_bar_cursor() { print -n '\e[6 q'; }
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _set_bar_cursor
+_set_bar_cursor
+
+# Use neovim as default editor (k9s, git, etc.)
+export EDITOR=nvim
+export K9S_EDITOR=nvim
+
+# Use XDG path for k9s on all OSes (mac defaults to ~/Library/... otherwise)
+export K9S_CONFIG_DIR="$HOME/.config/k9s"

@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+# aliasses
+alias vim="nvim "
+alias m="mise "
+alias g="git "
+alias d="docker "
+alias mr="mise run "
+alias v="nvim "
+alias mconfig="neovim ~/.zshrc"
+alias cat="bat --no-pager --style plain"
+alias h="hunt "
+alias ask="claude -p "
+alias ls="eza"
+
+
+# functions
+new-feature() {
+  local feature="${1:-}"
+
+  # --- Validate input ---
+  if [[ -z "$feature" ]]; then
+    echo "Usage: new-feature <feature description>" >&2
+    echo "Example: new-feature \"user can reset password via email\"" >&2
+    return 1
+  fi
+
+  # --- Must be run from inside a git repo ---
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: not inside a git repository." >&2
+    return 1
+  fi
+
+  local repo_root=$(git rev-parse --show-toplevel)
+  local worktrees_dir="$repo_root/worktrees"
+
+  # --- Ask Claude for a branch name ---
+  echo "Generating branch name..."
+
+  local branch=$(claude -p \
+    "Generate a git branch name for this feature: '$feature'.
+Rules:
+- Prefix with 'feature/'
+- Use kebab-case
+- Max 50 characters total (including prefix)
+- Only lowercase letters, numbers, and hyphens
+- No trailing hyphens
+- Return ONLY the branch name, nothing else" \
+    --allowedTools "" 2>/dev/null | tr -d '[:space:]')
+
+  # --- Validate Claude's output ---
+  if [[ -z "$branch" ]]; then
+    echo "Error: Claude returned an empty branch name." >&2
+    return 1
+  fi
+
+  if [[ ! "$branch" =~ ^feature/[a-z0-9-]+$ ]]; then
+    echo "Error: Claude returned an invalid branch name: '$branch'" >&2
+    return 1
+  fi
+
+  # --- Derive worktree directory ---
+  local dir="$worktrees_dir/${branch//\//-}"
+
+  # --- Check for conflicts ---
+  if git branch --list "$branch" | grep -q .; then
+    echo "Error: branch '$branch' already exists." >&2
+    return 1
+  fi
+
+  if [[ -d "$dir" ]]; then
+    echo "Error: directory '$dir' already exists." >&2
+    return 1
+  fi
+
+  # --- Create worktree ---
+  echo "Creating worktree..."
+  mkdir -p "$worktrees_dir"
+  git worktree add -b "$branch" "$dir" main
+
+  echo ""
+  echo "✓ Branch:   $branch"
+  echo "✓ Worktree: $dir"
+  echo ""
+
+  # --- Launch Claude Code in the new worktree ---
+  echo "Launching Claude..."
+  #mise -c "${dir}" trust
+  cd "$dir"
+  #mise install --yes
+  exec 'claude' '--dangerously-skip-permissions' "${feature}"
+}
+
