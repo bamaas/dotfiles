@@ -28,6 +28,15 @@ CHEZMOI="$(command -v chezmoi 2>/dev/null || echo "$HOME/.local/bin/chezmoi")"
 echo ">> Applying dotfiles..."
 "$CHEZMOI" init --source="$DOTDIR" --apply
 
+# Make zsh the login shell if available and not already (dev-container bases
+# often default to bash, so `--dotfiles` sessions would miss the zsh config).
+# Non-fatal; on a machine where zsh is already the shell this is a no-op.
+ZSH_BIN="$(command -v zsh || true)"
+if [ -n "$ZSH_BIN" ] && [ "$(basename "${SHELL:-}")" != zsh ]; then
+  echo ">> Setting default shell to zsh..."
+  chsh -s "$ZSH_BIN" 2>/dev/null || sudo chsh -s "$ZSH_BIN" "$(id -un)" 2>/dev/null || true
+fi
+
 echo ">> Done. Restart your shell (or: exec zsh)."
 echo ">> Note: machine-local secrets are NOT in this repo."
 echo "   Recreate ~/.zshrc.local and ~/.config/mise/conf.d/secrets.local.toml as needed."
