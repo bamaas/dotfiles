@@ -15,7 +15,7 @@ claude = "latest"        # native binary via aqua backend (no node dependency)
 # kubernetes tooling (wanted in containers too)
 kubectl = "1.29.11"
 k9s = "0.32.7"
-helm = "latest"
+"asdf:Antiarchitect/asdf-helm" = "3.16.3"   # default `helm`/aqua backend has a broken URL
 {{- if eq .chezmoi.os "darwin" }}
 
 # --- full set: macOS host only (heavy: go/python/terraform/k8s tooling) ---
