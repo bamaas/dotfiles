@@ -41,11 +41,7 @@ ARG GITHUB_TOKEN=""
 # installs the tool set via mise.
 RUN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" GITHUB_TOKEN="$GITHUB_TOKEN" \
     chezmoi init --source="$HOME/git/dotfiles" --apply
-
-# Minimal Claude config so it doesn't prompt for onboarding/theme in the container.
-# Auth comes from CLAUDE_CODE_OAUTH_TOKEN (see devcontainer.json), not from files.
-RUN mkdir -p "$HOME/.claude" \
- && printf '{\n  "theme": "dark"\n}\n' > "$HOME/.claude/settings.json" \
- && printf '{\n  "hasCompletedOnboarding": true\n}\n' > "$HOME/.claude.json"
+# (Claude onboarding/theme is seeded by run_once_after_40-claude-config.sh during
+#  the apply above, so it also works on the --dotfiles path.)
 
 ENV SHELL=/usr/bin/zsh
