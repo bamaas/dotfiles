@@ -37,4 +37,10 @@ RUN chezmoi init --source="$HOME/git/dotfiles" --apply
 # Claude Code (needs node, now installed by mise)
 RUN mise exec node -- npm install -g @anthropic-ai/claude-code
 
+# Minimal Claude config so it doesn't prompt for onboarding/theme in the container.
+# Auth comes from CLAUDE_CODE_OAUTH_TOKEN (see devcontainer.json), not from files.
+RUN mkdir -p "$HOME/.claude" \
+ && printf '{\n  "theme": "dark"\n}\n' > "$HOME/.claude/settings.json" \
+ && printf '{\n  "hasCompletedOnboarding": true\n}\n' > "$HOME/.claude.json"
+
 ENV SHELL=/usr/bin/zsh
