@@ -34,9 +34,6 @@ RUN sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin" \
 # installs the tool set via mise.
 RUN chezmoi init --source="$HOME/git/dotfiles" --apply
 
-# Claude Code (needs node, now installed by mise)
-RUN mise exec node -- npm install -g @anthropic-ai/claude-code
-
 # Minimal Claude config so it doesn't prompt for onboarding/theme in the container.
 # Auth comes from CLAUDE_CODE_OAUTH_TOKEN (see devcontainer.json), not from files.
 RUN mkdir -p "$HOME/.claude" \
