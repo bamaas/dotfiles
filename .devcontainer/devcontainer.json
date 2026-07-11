@@ -18,11 +18,10 @@
     // the host env at up-time — no secret is stored in this repo. The macOS
     // Keychain login can't be mounted into a Linux container, so this is the way.
     "CLAUDE_CODE_OAUTH_TOKEN": "${localEnv:CLAUDE_CODE_OAUTH_TOKEN}",
-    // Token auth for the container, sourced from the host env (your mise
-    // secrets.local.toml exports GITHUB_TOKEN). GH_TOKEN is gh's preferred var;
-    // GITHUB_TOKEN is what mise reads. Both point at the same host value.
-    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
-    "GH_TOKEN": "${localEnv:GITHUB_TOKEN}"
+    // One token covers both: mise reads GITHUB_TOKEN (raises its GitHub API
+    // limit) and gh reads it too (authenticates the CLI). Sourced from the host
+    // env, which your mise secrets.local.toml exports.
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
   },
   // Re-apply in case the repo changed since the image was built (no-op otherwise).
   "postCreateCommand": "chezmoi apply --source $HOME/git/dotfiles || true"
