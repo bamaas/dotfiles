@@ -2,7 +2,13 @@
   "name": "bamaas-dotfiles",
   "build": {
     "dockerfile": "Dockerfile",
-    "context": ".."
+    "context": "..",
+    // Optional: raises mise's GitHub API rate limit during build. Export
+    // GITHUB_TOKEN on the host (e.g. `export GITHUB_TOKEN=$(gh auth token)`)
+    // before `devpod up`. Empty -> anonymous (fine for occasional builds).
+    "args": {
+      "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
+    }
   },
   "remoteUser": "vscode",
   "containerEnv": {

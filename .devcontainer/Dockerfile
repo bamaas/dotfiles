@@ -30,9 +30,17 @@ COPY --chown=vscode:vscode . /home/vscode/git/dotfiles
 RUN sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin" \
  && curl -fsSL https://mise.run | sh
 
+# Optional GitHub token (from devcontainer.json build.args -> ${localEnv:GITHUB_TOKEN}).
+# Raises mise's GitHub API limit from 60/h (anon) to 5000/h so version resolution
+# for github/aqua-backed tools doesn't hit 403 rate limits. Empty -> anonymous.
+# Passed inline to the RUN only (not ENV), and the image is built locally / never
+# pushed, so it doesn't persist into a published layer.
+ARG GITHUB_TOKEN=""
+
 # Apply dotfiles: renders lean mise config (Linux), then the run_once script
 # installs the tool set via mise.
-RUN chezmoi init --source="$HOME/git/dotfiles" --apply
+RUN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" GITHUB_TOKEN="$GITHUB_TOKEN" \
+    chezmoi init --source="$HOME/git/dotfiles" --apply
 
 # Minimal Claude config so it doesn't prompt for onboarding/theme in the container.
 # Auth comes from CLAUDE_CODE_OAUTH_TOKEN (see devcontainer.json), not from files.
