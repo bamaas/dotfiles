@@ -17,7 +17,11 @@
     // `claude setup-token`, exported in ~/.zshrc.local (git-ignored). Read from
     // the host env at up-time — no secret is stored in this repo. The macOS
     // Keychain login can't be mounted into a Linux container, so this is the way.
-    "CLAUDE_CODE_OAUTH_TOKEN": "${localEnv:CLAUDE_CODE_OAUTH_TOKEN}"
+    "CLAUDE_CODE_OAUTH_TOKEN": "${localEnv:CLAUDE_CODE_OAUTH_TOKEN}",
+    // gh CLI reads GITHUB_TOKEN natively -> authenticated in the container without
+    // mounting ~/.config/gh (which is often Keychain-backed on macOS anyway).
+    // Also gives runtime mise the higher GitHub API limit on the --dotfiles path.
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
   },
   // Re-apply in case the repo changed since the image was built (no-op otherwise).
   "postCreateCommand": "chezmoi apply --source $HOME/git/dotfiles || true"
