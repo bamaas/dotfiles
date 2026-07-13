@@ -70,11 +70,19 @@ subscription; opens a browser to authorize):
 export CLAUDE_CODE_OAUTH_TOKEN="$(claude setup-token)"
 ```
 
+Optionally set a GitHub token — mise installs tools from GitHub releases and
+hits the anonymous 60 req/h rate limit fast:
+
+```sh
+export GITHUB_TOKEN="$(gh auth token)"
+```
+
 Then spin up the workspace and land straight in Claude Code:
 
 ```sh
 devpod up ${PWD} --dotfiles https://github.com/bamaas/dotfiles \
   --workspace-env CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
+  --workspace-env GITHUB_TOKEN="$GITHUB_TOKEN" \
   && devpod ssh $(basename "$PWD") --command claude
 ```
 
