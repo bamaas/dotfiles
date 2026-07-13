@@ -63,6 +63,15 @@ RUN git clone --depth=1 https://github.com/bamaas/dotfiles /home/vscode/git/dotf
 
 ### Claude Code on any project, one command
 
+First create a long-lived Claude Code token (one-time, requires a Claude
+subscription; opens a browser to authorize):
+
+```sh
+export CLAUDE_CODE_OAUTH_TOKEN="$(claude setup-token)"
+```
+
+Then spin up the workspace and land straight in Claude Code:
+
 ```sh
 devpod up ${PWD} --dotfiles https://github.com/bamaas/dotfiles \
   --workspace-env CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
