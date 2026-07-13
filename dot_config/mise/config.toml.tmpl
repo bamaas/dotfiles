@@ -16,10 +16,17 @@ claude = "latest"        # native binary via aqua backend (no node dependency)
 kubectl = "1.29.11"
 k9s = "0.32.7"
 "asdf:Antiarchitect/asdf-helm" = "3.16.3"   # default `helm`/aqua backend has a broken URL
+
+# --- node + lean-ctx: macOS host AND Linux dev containers ---
+# node is required by the npm backend that provides lean-ctx (and by the
+# claude-hud statusline). DEVCONTAINER=1 is exported in the Dockerfile.
+{{- if or (eq .chezmoi.os "darwin") (env "DEVCONTAINER") }}
+node = "latest"
+"npm:lean-ctx-bin" = "latest"
+{{- end }}
 {{- if eq .chezmoi.os "darwin" }}
 
 # --- full set: macOS host only (heavy: go/python/terraform/k8s tooling) ---
-node = "latest"          # needed by npm:lean-ctx-bin below
 argocd = "2.13.1"
 "github:anomalyco/opencode" = "latest"
 go = "1.23.3"
@@ -36,7 +43,6 @@ terraform = "1.10.1"
 uv = "latest"
 yamllint = "1.37.0"
 yazi = "latest"
-"npm:lean-ctx-bin" = "latest"
 "pipx:commitizen" = "latest"
 poetry = "latest"
 zarf = "latest"
