@@ -45,20 +45,11 @@ devpod up github.com/bamaas/dotfiles      # this repo as a workspace
 
 ### Use it on any project
 
+Keep the project's own devcontainer (or devpod's default image) and layer
+these dotfiles + tools on top:
+
 ```sh
-# A) dotfiles injection: keep the project's own devcontainer (or devpod's
-#    default image), layer these dotfiles + tools on top
 devpod up ${PWD} --dotfiles https://github.com/bamaas/dotfiles
-
-# B) full baked image: copy this devcontainer into the project
-cp -r ~/git/dotfiles/.devcontainer ${PWD}/ && devpod up ${PWD}
-```
-
-For B, the Dockerfile `COPY`s the build context as the chezmoi source — that
-only works inside this repo. In other projects, replace the `COPY` line with:
-
-```dockerfile
-RUN git clone --depth=1 https://github.com/bamaas/dotfiles /home/vscode/git/dotfiles
 ```
 
 ### Claude Code on any project, one command
