@@ -11,6 +11,9 @@
     }
   },
   "remoteUser": "vscode",
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
   "containerEnv": {
     "DEVCONTAINER": "1",
     // Claude Code auth: long-lived token generated on the host via
@@ -23,6 +26,9 @@
     // env, which your mise secrets.local.toml exports.
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
   },
+  // Fix docker socket GID mismatch: host socket is mounted as root:root but
+  // the vscode user's docker group has a different GID.
+  "postStartCommand": "sudo chgrp docker /var/run/docker.sock 2>/dev/null || true",
   // Re-apply in case the repo changed since the image was built (no-op otherwise).
   "postCreateCommand": "chezmoi apply --source $HOME/git/dotfiles || true"
 }

@@ -6,13 +6,20 @@ FROM mcr.microsoft.com/devcontainers/base:debian
 # OS deps (base image already has git/curl/sudo and the `vscode` user)
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
  && apt-get install -y --no-install-recommends zsh unzip ca-certificates ncurses-bin \
+ && install -m 0755 -d /etc/apt/keyrings \
+ && curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc \
+ && chmod a+r /etc/apt/keyrings/docker.asc \
+ && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends docker-ce-cli docker-compose-plugin \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Marks this as a container build -> chezmoi renders the lean mise tool set.
 ENV DEVCONTAINER=1
 
-# make zsh the login shell for the non-root user
-RUN chsh -s /usr/bin/zsh vscode
+# make zsh the login shell for the non-root user; grant docker socket access
+RUN chsh -s /usr/bin/zsh vscode \
+ && groupadd -f docker && usermod -aG docker vscode
 
 USER vscode
 ENV HOME=/home/vscode
