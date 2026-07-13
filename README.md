@@ -71,6 +71,17 @@ For other projects replace that `COPY` line with:
 RUN git clone --depth=1 https://github.com/bamaas/dotfiles /home/vscode/git/dotfiles
 ```
 
+### Claude Code on any project, one command
+
+Spin up a workspace and land straight in Claude Code (token from
+`claude setup-token`, see auth note below):
+
+```sh
+devpod up github.com/you/your-project --dotfiles https://github.com/bamaas/dotfiles \
+  --workspace-env CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
+  && devpod ssh your-project --command claude
+```
+
 - **Lean vs full tools:** the container installs only the lean set (node, neovim,
   ripgrep, fzf, bat, eza, zoxide, yq, lazygit, direnv, gh, zellij). The heavy set
   (go, python, terraform, k8s tooling) is macOS-only — see the `{{ if eq .chezmoi.os "darwin" }}`
