@@ -68,14 +68,16 @@ hits the anonymous 60 req/h rate limit fast:
 export GITHUB_TOKEN="$(gh auth token)"
 ```
 
-Then spin up the workspace and land straight in Claude Code:
+Then spin up the workspace and ssh in:
 
 ```sh
 devpod up ${PWD} --dotfiles https://github.com/bamaas/dotfiles \
   --workspace-env CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
   --workspace-env GITHUB_TOKEN="$GITHUB_TOKEN" \
-  && devpod ssh $(basename "$PWD") --command claude
+  && devpod ssh $(basename "$PWD")
 ```
+
+Inside, run `claude`.
 
 ### Container notes
 
