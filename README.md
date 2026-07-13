@@ -20,6 +20,7 @@ This clones the repo, installs chezmoi, then `chezmoi apply` places the configs 
 | k9s | `dot_config/k9s/` (config + skins) |
 | mise | `dot_config/mise/config.toml` (the tool manifest) |
 | zellij | `dot_config/zellij/` |
+| Claude Code skills | `.chezmoiexternal.toml` (pulled from [mattpocock/skills](https://github.com/mattpocock/skills) into `~/.claude/skills/`, weekly refresh) |
 
 ## Everyday workflow
 
@@ -57,8 +58,10 @@ devpod up <your-repo> --dotfiles https://github.com/bamaas/dotfiles
   ripgrep, fzf, bat, eza, zoxide, yq, lazygit, direnv, gh, zellij). The heavy set
   (go, python, terraform, k8s tooling) is macOS-only — see the `{{ if eq .chezmoi.os "darwin" }}`
   branch in `dot_config/mise/config.toml.tmpl`.
-- **Claude Code auth:** `devcontainer.json` mounts the host `~/.claude` so your login
-  is reused. Drop that mount to `claude login` inside the container instead.
+- **Claude Code auth:** the container reads `CLAUDE_CODE_OAUTH_TOKEN` from the host
+  env at up-time (generate once with `claude setup-token`, export it in `~/.zshrc.local`).
+- **Docker:** the host docker socket is mounted and `docker-ce-cli` is baked in, so
+  `docker` works inside the container (socket group is fixed on start).
 - **Secrets:** the container has **no** secrets (they live in git-ignored local files
   that never enter the image). Pass any needed secret via `devpod up --env KEY=...`.
 
