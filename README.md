@@ -76,7 +76,7 @@ devpod up ${PWD} --dotfiles https://github.com/bamaas/dotfiles \
   python, terraform, k8s tooling) is macOS-only — see the `darwin` branch in
   `dot_config/mise/config.toml.tmpl`.
 - **Claude Code auth:** the container reads `CLAUDE_CODE_OAUTH_TOKEN` from the
-  host env. Generate it once with `claude setup-token`, export in `~/.zshrc.local`.
+  host env. Generate it once with `claude setup-token`.
 - **Docker:** the host socket is mounted and `docker-ce-cli` is baked in —
   `docker` works inside the container (socket group is fixed on start).
 - **Secrets:** none in the image. Pass what's needed via `devpod up --env KEY=...`.
