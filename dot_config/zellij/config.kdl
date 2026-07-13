@@ -9,6 +9,8 @@ keybinds {
         bind "Alt d" { NewPane "down"; }
         bind "Alt r" { NewPane "right"; }
         bind "Alt w" { CloseFocus; }
+        bind "Alt [" { GoToPreviousTab; }
+        bind "Alt ]" { GoToNextTab; }
         bind "Alt e" { TogglePaneEmbedOrFloating; }
         bind "Alt m" { ToggleFocusFullscreen; }
         bind "Alt g" { SwitchToMode "locked"; }

@@ -1,0 +1,23 @@
+# Don't prompt when closing a tab/surface
+confirm-close-surface = false
+
+# Option key acts as Alt/Meta so zellij alt+ binds work
+macos-option-as-alt = true
+
+# Command key -> zellij: translate cmd+KEY into Alt escape sequence
+# so zellij receives the Alt+key bind. ESC = \x1b, then the key.
+keybind = cmd+t=text:\x1bt
+keybind = cmd+d=text:\x1bd
+keybind = cmd+w=text:\x1bw
+keybind = cmd+shift+left_bracket=text:\x1b[
+keybind = cmd+shift+right_bracket=text:\x1b]
+
+# Other cmd -> ctrl passthrough for zellij modes
+keybind = cmd+g=text:\x07
+keybind = cmd+p=text:\x10
+keybind = cmd+n=text:\x1bn
+keybind = cmd+h=text:\x08
+keybind = cmd+s=text:\x13
+keybind = cmd+o=text:\x0f
+keybind = cmd+b=text:\x02
+# cmd+q left native (quits ghostty). zellij Quit still on Ctrl+q.
