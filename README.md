@@ -48,10 +48,27 @@ fast and no registry is needed — devpod builds and caches it locally.
 devpod up github.com/bamaas/dotfiles      # spin up this repo as a workspace
 ```
 
-Or reuse the setup for any other project via devpod's dotfiles support:
+### Use it on any project
+
+Two ways to bring this environment to another repo:
 
 ```sh
-devpod up <your-repo> --dotfiles https://github.com/bamaas/dotfiles
+# A) dotfiles injection: keep the project's own devcontainer (or devpod's
+#    default image) and layer these dotfiles + tools on top
+devpod up github.com/you/your-project --dotfiles https://github.com/bamaas/dotfiles
+
+# B) full environment: copy this devcontainer into the project, then up it
+cp -r ~/git/dotfiles/.devcontainer ~/git/your-project/
+devpod up ~/git/your-project
+```
+
+A is zero-setup and works with any repo. B gives the complete baked image
+(docker socket, Claude Code auth, lean mise tool set) — but the Dockerfile
+`COPY`s the build context as the chezmoi source, which only works in this repo.
+For other projects replace that `COPY` line with:
+
+```dockerfile
+RUN git clone --depth=1 https://github.com/bamaas/dotfiles /home/vscode/git/dotfiles
 ```
 
 - **Lean vs full tools:** the container installs only the lean set (node, neovim,
