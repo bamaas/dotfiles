@@ -1,23 +1,24 @@
 #!/bin/sh
-# Pre-seed Claude Code config in containers so it doesn't prompt for onboarding /
-# theme on first launch. Works on BOTH the baked-image path and the --dotfiles
-# path (both run `chezmoi apply` inside the container). Containers only — never
-# touches a real machine's ~/.claude (guarded by DEVCONTAINER / /.dockerenv).
+# Configure Claude Code tooling (lean-ctx, claude-hud, rtk, caveman).
+# Runs on BOTH macOS host and Linux dev containers.
+# Container-only: pre-seed theme + onboarding so Claude doesn't prompt on first launch.
 set -eu
-
-if [ -z "${DEVCONTAINER:-}" ] && [ ! -f /.dockerenv ]; then exit 0; fi
-
-mkdir -p "$HOME/.claude"
-# theme (only if not already set)
-[ -f "$HOME/.claude/settings.json" ] || printf '{\n  "theme": "dark"\n}\n' > "$HOME/.claude/settings.json"
-# onboarding flag (only if missing / not already accepted)
-if ! grep -q hasCompletedOnboarding "$HOME/.claude.json" 2>/dev/null; then
-  printf '{\n  "hasCompletedOnboarding": true\n}\n' > "$HOME/.claude.json"
-fi
 
 # mise shims (node / lean-ctx / claude / yq) must be resolvable here. Script 10
 # already ran `mise install`, so the shims exist by now.
 export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+
+mkdir -p "$HOME/.claude"
+
+# --- container-only: seed theme + onboarding --------------------------------
+if [ -n "${DEVCONTAINER:-}" ] || [ -f /.dockerenv ]; then
+  # theme (only if not already set)
+  [ -f "$HOME/.claude/settings.json" ] || printf '{\n  "theme": "dark"\n}\n' > "$HOME/.claude/settings.json"
+  # onboarding flag (only if missing / not already accepted)
+  if ! grep -q hasCompletedOnboarding "$HOME/.claude.json" 2>/dev/null; then
+    printf '{\n  "hasCompletedOnboarding": true\n}\n' > "$HOME/.claude.json"
+  fi
+fi
 
 # --- lean-ctx MCP server (npm:lean-ctx-bin, installed via mise) --------------
 # Registers the same stdio server the host uses. Local config only (no API/auth
@@ -49,4 +50,18 @@ EOF
     .statusLine.command = strenv(HUD_CMD) |
     .enabledPlugins["claude-hud@claude-hud"] = true
   ' "$HOME/.claude/settings.json" 2>/dev/null || true
+fi
+
+# --- rtk context engine (github.com/rtk-ai/rtk) -----------------------------
+# Installed via mise (lean set). `rtk init -g` creates a global config that
+# wires RTK into Claude Code as a context provider.
+if command -v rtk >/dev/null 2>&1; then
+  rtk init -g >/dev/null 2>&1 || true
+fi
+
+# --- caveman prompt skill (github.com/juliusbrussee/caveman) -----------------
+# Claude Code plugin — ultra-compressed communication mode.
+if command -v claude >/dev/null 2>&1; then
+  claude plugin marketplace add JuliusBrussee/caveman >/dev/null 2>&1 || true
+  claude plugin install caveman@caveman -s user >/dev/null 2>&1 || true
 fi
