@@ -1,3 +1,6 @@
+# Nerd Font for nvim icons (render-markdown.nvim, nvim-web-devicons, etc.)
+font-family = "JetBrainsMono Nerd Font"
+
 # Don't prompt when closing a tab/surface
 confirm-close-surface = false
 
