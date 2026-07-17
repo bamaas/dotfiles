@@ -1,7 +1,7 @@
 // Keybinds: zellij built-in defaults + a few global Alt shortcuts.
 // No `clear-defaults` -> the default keybindings are kept and merged.
 // Defaults already provide: Alt n = new pane, Alt f = toggle floating,
-// Alt h/j/k/l = navigate, Alt +/- = resize, Alt [ ] = swap layouts,
+// Alt h/j/k/l = navigate, Alt +/- = resize, Alt a = swap layouts,
 // Alt i/o = move tab. Enter modes with Ctrl p/t/n/s/o, lock with Ctrl g.
 keybinds {
     shared_except "locked" {
@@ -12,6 +12,7 @@ keybinds {
         bind "Alt [" { GoToPreviousTab; }
         bind "Alt ]" { GoToNextTab; }
         bind "Alt e" { TogglePaneEmbedOrFloating; }
+        bind "Alt a" { NextSwapLayout; }
         bind "Alt m" { ToggleFocusFullscreen; }
         bind "Alt g" { SwitchToMode "locked"; }
     }
@@ -100,7 +101,7 @@ copy_on_select true
 // The name of the default layout to load on startup
 // Default: "default"
 // 
-// default_layout "compact"
+default_layout "compact"
  
 // The folder in which Zellij will look for layouts
 // (Requires restart)
@@ -302,7 +303,7 @@ copy_on_select true
 // Whether to show tips on startup
 // Default: true
 // 
-// show_startup_tips false
+show_startup_tips false
  
 // Whether to show release notes on first version run
 // Default: true
@@ -362,9 +363,9 @@ themes {
             base 176 178 173
             background 40 42 54
             emphasis_0 87 199 255
-            emphasis_1 154 237 254
-            emphasis_2 255 106 193
-            emphasis_3 90 247 142
+            emphasis_1 87 199 255
+            emphasis_2 87 199 255
+            emphasis_3 87 199 255
         }
         text_selected {
             base 239 240 235
@@ -378,9 +379,9 @@ themes {
             base 176 178 173
             background 40 42 54
             emphasis_0 87 199 255
-            emphasis_1 176 178 173
-            emphasis_2 176 178 173
-            emphasis_3 176 178 173
+            emphasis_1 87 199 255
+            emphasis_2 87 199 255
+            emphasis_3 87 199 255
         }
         ribbon_selected {
             base 255 106 193
