@@ -5,6 +5,7 @@
 // Alt i/o = move tab. Enter modes with Ctrl p/t/n/s/o, lock with Ctrl g.
 keybinds {
     shared_except "locked" {
+        unbind "Ctrl g"
         bind "Alt t" { NewTab; }
         bind "Alt d" { NewPane "down"; }
         bind "Alt r" { NewPane "right"; }
