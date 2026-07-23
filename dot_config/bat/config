@@ -1,0 +1,3 @@
+# Explicit theme: also prevents OSC 11 terminal-background query
+# (auto-detect) from leaking escape sequences into the shell.
+--theme="Dracula"
