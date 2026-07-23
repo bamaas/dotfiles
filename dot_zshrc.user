@@ -91,3 +91,8 @@ Rules:
   exec 'claude' '--dangerously-skip-permissions' "${feature}"
 }
 
+# --- Quickly ask questions ---
+q(){
+  ollama launch claude --model minimax-m3:cloud -- -p "$*"
+}
+
