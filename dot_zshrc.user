@@ -93,6 +93,6 @@ Rules:
 
 # --- Quickly ask questions ---
 q(){
-  ollama launch claude --model gemma4:31b-cloud -- -p "$*"
+  claude --model opus -p "$*"
 }
 

@@ -6,7 +6,7 @@
 local M = {}
 
 M.base46 = {
-	theme = "tokyonight",
+	theme = "chocolate",
 
 	hl_add = {
 		-- YAML: keys -> snazzy cyan, values -> snazzy pink
