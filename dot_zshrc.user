@@ -88,7 +88,7 @@ Rules:
   #mise -c "${dir}" trust
   cd "$dir"
   #mise install --yes
-  exec 'claude' '--dangerously-skip-permissions' "${feature}"
+  exec 'claude' '--dangerously-skip-permissions' "${feature} - Before you begin working, ensure you pulled the latest changes from main in. Then do the work. Once work is done commit it. Once commited pull the latest changes from main in and merge it. Once merged, and on main, push main to the remote. Finally remove the worktree."
 }
 
 # --- Quickly ask questions ---
