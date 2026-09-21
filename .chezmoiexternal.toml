@@ -62,3 +62,14 @@
     stripComponents = 4
     include = ["*/skills/engineering/code-review/**"]
     refreshPeriod = "168h"
+
+# Claude Code skill from github.com/debs-obrien/learn-agent-skills.
+# stripComponents=4 drops "learn-agent-skills-main/.agents/skills/readme-wizard".
+
+[".claude/skills/readme-wizard"]
+    type = "archive"
+    url = "https://github.com/debs-obrien/learn-agent-skills/archive/main.tar.gz"
+    exact = true
+    stripComponents = 4
+    include = ["*/.agents/skills/readme-wizard/**"]
+    refreshPeriod = "168h"
