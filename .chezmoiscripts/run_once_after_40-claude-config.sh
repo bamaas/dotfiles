@@ -1,5 +1,5 @@
 #!/bin/sh
-# Configure Claude Code tooling (lean-ctx, claude-hud, rtk, caveman).
+# Configure Claude Code tooling (lean-ctx, claude-hud, caveman).
 # Runs on BOTH macOS host and Linux dev containers.
 # Container-only: pre-seed theme + onboarding so Claude doesn't prompt on first launch.
 set -eu
@@ -52,12 +52,6 @@ EOF
   ' "$HOME/.claude/settings.json" 2>/dev/null || true
 fi
 
-# --- rtk context engine (github.com/rtk-ai/rtk) -----------------------------
-# Installed via mise (lean set). `rtk init -g` creates a global config that
-# wires RTK into Claude Code as a context provider.
-if command -v rtk >/dev/null 2>&1; then
-  rtk init -g >/dev/null 2>&1 || true
-fi
 
 # --- caveman prompt skill (github.com/juliusbrussee/caveman) -----------------
 # Claude Code plugin — ultra-compressed communication mode.

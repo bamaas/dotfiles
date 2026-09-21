@@ -15,7 +15,6 @@ kind = "latest"
 starship = "latest"
 claude = "latest"        # native binary via aqua backend (no node dependency)
 pi = "latest"            # pi coding agent (earendil-works/pi)
-"github:rtk-ai/rtk" = "latest"
 # kubernetes tooling (wanted in containers too)
 kubectl = "1.29.11"
 "aqua:derailed/k9s" = "0.32.7"
@@ -26,7 +25,7 @@ kubectl = "1.29.11"
 # claude-hud statusline). DEVCONTAINER=1 is exported in the Dockerfile.
 {{- if or (eq .chezmoi.os "darwin") (env "DEVCONTAINER") }}
 node = "latest"
-"npm:lean-ctx-bin" = "latest"
+"npm:lean-ctx-bin" = { version = "latest", allow_low_downloads = true }
 {{- end }}
 {{- if eq .chezmoi.os "darwin" }}
 
