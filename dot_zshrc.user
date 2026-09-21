@@ -32,7 +32,7 @@ new-feature() {
   fi
 
   local repo_root=$(git rev-parse --show-toplevel)
-  local worktrees_dir="$repo_root/worktrees"
+  local worktrees_dir="$repo_root/.claude/worktrees"
 
   # --- Ask Claude for a branch name ---
   echo "Generating branch name..."
