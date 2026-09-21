@@ -43,3 +43,11 @@ When the user asks to find, research, compare, or discover information:
 For research tasks requiring multiple sources:
 - Use Tavily to discover relevant URLs.
 - Use Jina to extract the content of those URLs.
+
+## How I want you to work
+
+- Keep answers short and to the point.
+- Prefer concrete examples over abstract theory.
+- If something is not clear, keep asking me until you have no questions left.
+- You decide the needed effort level for subagents.
+- When a decision needs to be made, present the options one by one, and state your weight/preference for each option.
