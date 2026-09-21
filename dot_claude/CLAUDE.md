@@ -1,22 +1,5 @@
 <!-- @RTK.md -->
 
-<!-- lean-ctx -->
-<!-- lean-ctx-claude-v2 -->
-## lean-ctx — Context Runtime
-
-Always prefer lean-ctx MCP tools over native equivalents:
-- `ctx_read` instead of `Read` / `cat` (cached, 10 modes, re-reads ~13 tokens)
-- `ctx_shell` instead of `bash` / `Shell` (95+ compression patterns)
-- `ctx_search` instead of `Grep` / `rg` (compact results)
-- `ctx_tree` instead of `ls` / `find` (compact directory maps)
-- Native Edit/StrReplace stay unchanged. If Edit requires Read and Read is unavailable, use `ctx_edit(path, old_string, new_string)` instead.
-- Write, Delete, Glob — use normally.
-
-Full rules: @rules/lean-ctx.md
-
-Verify setup: run `/mcp` to check lean-ctx is connected, `/memory` to confirm this file loaded.
-<!-- /lean-ctx -->
-
 <!-- lucidvault:start -->
  ## My personal knowledge vault
 When I ask about my own notes, bookmarks, or saved articles (or say "vault"), read it directly from `/Users/bas/lucidvault/lucidvault/` — start with that folder's `AGENTS.md` and follow it (source of truth for how to search and cite). 
@@ -51,3 +34,31 @@ For research tasks requiring multiple sources:
 - If something is not clear, keep asking me until you have no questions left.
 - You decide the needed effort level for subagents.
 - When a decision needs to be made, present the options one by one, and state your weight/preference for each option.
+
+<!-- lean-ctx -->
+<!-- lean-ctx-claude-v9 -->
+## lean-ctx — Replace Mode (native Grep/Glob denied by policy)
+
+Native Grep/Glob are denied by policy. Prefer `ctx_*` MCP tools for project work:
+- `ctx_read` for exploration reads (cached, 10 modes, unchanged full/auto re-reads ~13 tokens)
+- `ctx_shell` for shell commands (95+ compression patterns)
+- `ctx_search` instead of Grep/rg (compact results)
+- `ctx_tree` instead of ls/find (compact directory maps)
+- `ctx_glob` instead of Glob (file pattern matching)
+- Project edits: `ctx_read(mode="anchored")` → `ctx_patch` (line+hash anchors; `op=create` for new files).
+
+Native `Read` is reserved for the edit gate (read-before-write) only.
+For exploration, orientation, and code understanding: ALWAYS use `ctx_read`.
+Claude auto memory (`~/.claude/projects/<slug>/memory/` — MEMORY.md and topic
+files) uses native Read/Edit internally; do NOT call MCP `resources/read` with
+file:// URIs (lean-ctx resources are `lean-ctx://context/*` only). Native Delete is fine.
+
+Read modes: anchored (edit), full (verbatim), map (overview), signatures (API), diff (post-edit), lines:N-M (range), auto.
+Details live in the `lean-ctx` skill (loads on demand — keep this file lean).
+<!-- /lean-ctx -->
+
+<!-- lean-ctx-solution -->
+SOLUTION EFFICIENCY: stop at first level that applies:
+skip (YAGNI) → reuse codebase → stdlib → native platform → installed dep → one-line → minimum code.
+Never skip: validation, security, error handling.
+<!-- /lean-ctx-solution -->
