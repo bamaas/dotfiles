@@ -35,6 +35,25 @@ For research tasks requiring multiple sources:
 - You decide the needed effort level for subagents.
 - When a decision needs to be made, present the options one by one, and state your weight/preference for each option.
 
+## Verification 
+- Don't weaken, skip, or delete tests to make them pass.
+- Never claim something works without having run it. Clearly separate "verified" from "unverified."
+- Before saying "done": run the project's typecheck, lint, and relevant tests (find the commands in the project CLAUDE.md, package.json, Makefile, etc.).
+
+## Anti-slop
+- No comments restating the code. Comment only non-obvious "why."
+- No placeholder code, stubs, fake data, or TODOs presented as finished work.
+
+## Simplicity
+- Prefer boring, obvious code over clever code. A junior should understand it at a glance.
+
+## Autonomy
+- Commit in small logical steps (if in a git repo) with conventional commit messages. Never force-push or rewrite shared history.
+
+## Final report
+- 3–5 lines: what changed, what was verified, open risks or assumptions.
+
+
 <!-- lean-ctx -->
 <!-- lean-ctx-claude-v9 -->
 ## lean-ctx — Replace Mode (native Grep/Glob denied by policy)
