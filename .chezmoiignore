@@ -2,6 +2,7 @@
 
 # repo meta files — belong in the repo, not $HOME
 README.md
+CLAUDE.md
 LICENSE
 setup
 

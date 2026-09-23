@@ -30,27 +30,13 @@ Rules:
 - mem0 = `mem0-mcp` (hosted HTTP) only. The `mem0@mem0-plugins` plugin is deliberately
   not installed — two mem0 backends split writes across stores.
 
-## System changes go through the dotfiles repo
+## Changing my system
 
 My machine config is chezmoi-managed in `/Users/bas/git/dotfiles`. Anything written
-straight into `$HOME` is wiped on the next `chezmoi apply`.
-
-- Change the source in `/Users/bas/git/dotfiles`, then run `chezmoi apply` — never
-  edit a managed file in `$HOME` directly.
-- Path mapping: `dot_claude/CLAUDE.md` -> `~/.claude/CLAUDE.md`,
-  `dot_config/...` -> `~/.config/...`.
-- Tools: add to `dot_config/mise/config.toml.tmpl`. Claude Code wiring (MCP servers,
-  plugins, skills): add to `.chezmoiscripts/run_once_after_40-claude-config.sh`.
-- Installers that append to `~/.claude/CLAUDE.md` (graphify does) write to a managed
-  file — copy the change back into `dot_claude/CLAUDE.md` afterwards.
-- Never commit secrets. Machine-local secrets live in
-  `~/.config/mise/conf.d/secrets.local.toml` (chezmoi-ignored); scripts read them from env.
-- Claude Code settings are split: portable keys in `dot_claude/private_settings.json`,
-  machine-local ones (`mcpServers`, anything holding a key) in `~/.claude/settings.local.json`,
-  which Claude Code merges on top and chezmoi ignores. Never move an MCP server with a
-  key in its URL into the tracked half.
-- After changing the repo, run `chezmoi status` to confirm `$HOME` matches, and commit.
-
+straight into `$HOME` is wiped by the next `chezmoi apply`, so any change meant to
+survive — a tool, an MCP server, a hook, a Claude Code setting — goes through that
+repo. Read its `CLAUDE.md` before touching it; it carries the layout, the workflow
+and the traps.
 
 ## Web research
 
