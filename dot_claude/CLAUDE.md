@@ -34,6 +34,7 @@ For research tasks requiring multiple sources:
 - If something is not clear, keep asking me until you have no questions left.
 - You decide the needed effort level for subagents.
 - When a decision needs to be made, present the options one by one, and state your weight/preference for each option.
+- Prefer mem0 over Claude Code's default file-based memory system for storing preferences and facts
 
 ## Verification 
 - Don't weaken, skip, or delete tests to make them pass.
