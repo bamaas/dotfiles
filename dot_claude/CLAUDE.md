@@ -6,6 +6,48 @@ When I ask about my own notes, bookmarks, or saved articles (or say "vault"), re
 Search broadly: expand the query with adjacent terms, then do a second pass following [[wikilinks]] and shared tags before concluding. For any web search, use the Tavily MCP tools (tavily-search / tavily-extract), not the built-in WebSearch.
 <!-- lucidvault:end -->
 
+## Context store routing
+
+Four stores. Pick one per question; never search two for the same thing.
+
+| Question | Store | How |
+|---|---|---|
+| Where is X / what calls Y / current code structure | the code | `ctx_search`, `ctx_compose` |
+| Architecture, multi-hop call paths, code+docs+SQL in one view | graphify | `/graphify query "..."` |
+| Why we chose X / rejected Y / my preferences / past gotcha | mem0 | `mcp__mem0-mcp__search_memories` |
+| My notes, bookmarks, saved articles, research | lucidvault | read `/Users/bas/lucidvault/lucidvault/` directly |
+
+Rules:
+- Never store in mem0 anything re-derivable from a repo (file paths, signatures,
+  structure, past fixes). Code moves; mem0 does not notice.
+- mem0 holds only: decisions + why, rejected options, env quirks, my preferences.
+- Search mem0 before answering about prior decisions. Do not make me re-explain one.
+- On conflict about current code: the code wins over graphify's index, which wins
+  over mem0.
+- Rebuild the graphify index after a large refactor. A stale graph is worse than none.
+- Vault: read files directly (see its `AGENTS.md`). The `lucidvault` MCP server is a
+  LAN service — when it is unreachable, direct file reads still work; say so and carry on.
+- mem0 = `mem0-mcp` (hosted HTTP) only. The `mem0@mem0-plugins` plugin is deliberately
+  not installed — two mem0 backends split writes across stores.
+
+## System changes go through the dotfiles repo
+
+My machine config is chezmoi-managed in `/Users/bas/git/dotfiles`. Anything written
+straight into `$HOME` is wiped on the next `chezmoi apply`.
+
+- Change the source in `/Users/bas/git/dotfiles`, then run `chezmoi apply` — never
+  edit a managed file in `$HOME` directly.
+- Path mapping: `dot_claude/CLAUDE.md` -> `~/.claude/CLAUDE.md`,
+  `dot_config/...` -> `~/.config/...`.
+- Tools: add to `dot_config/mise/config.toml.tmpl`. Claude Code wiring (MCP servers,
+  plugins, skills): add to `.chezmoiscripts/run_once_after_40-claude-config.sh`.
+- Installers that append to `~/.claude/CLAUDE.md` (graphify does) write to a managed
+  file — copy the change back into `dot_claude/CLAUDE.md` afterwards.
+- Never commit secrets. Machine-local secrets live in
+  `~/.config/mise/conf.d/secrets.local.toml` (chezmoi-ignored); scripts read them from env.
+- After changing the repo, run `chezmoi status` to confirm `$HOME` matches, and commit.
+
+
 ## Web research
 
 Use these tools according to intent:
@@ -34,7 +76,8 @@ For research tasks requiring multiple sources:
 - If something is not clear, keep asking me until you have no questions left.
 - You decide the needed effort level for subagents.
 - When a decision needs to be made, present the options one by one, and state your weight/preference for each option.
-- Prefer mem0 over Claude Code's default file-based memory system for storing preferences and facts
+- Prefer mem0 (`mem0-mcp`) over Claude Code's default file-based memory system for
+  storing preferences and facts. See **Context store routing** for what belongs there.
 
 ## Verification 
 - Don't weaken, skip, or delete tests to make them pass.
@@ -82,3 +125,9 @@ SOLUTION EFFICIENCY: stop at first level that applies:
 skip (YAGNI) → reuse codebase → stdlib → native platform → installed dep → one-line → minimum code.
 Never skip: validation, security, error handling.
 <!-- /lean-ctx-solution -->
+
+<!-- graphify -->
+# graphify
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
+<!-- /graphify -->

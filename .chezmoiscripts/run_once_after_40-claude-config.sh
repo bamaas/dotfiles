@@ -59,3 +59,21 @@ if command -v claude >/dev/null 2>&1; then
   claude plugin marketplace add JuliusBrussee/caveman >/dev/null 2>&1 || true
   claude plugin install caveman@caveman -s user >/dev/null 2>&1 || true
 fi
+
+# --- mem0 memory MCP (hosted: https://mcp.mem0.ai/mcp) ----------------------
+# One memory backend on purpose. The `mem0@mem0-plugins` Claude Code plugin is
+# deliberately NOT installed: two mem0 backends split writes across two stores.
+# MEM0_API_KEY comes from ~/.config/mise/conf.d/secrets.local.toml (never committed);
+# skipped silently when the secret is not in the env (e.g. dev containers).
+if command -v claude >/dev/null 2>&1 && [ -n "${MEM0_API_KEY:-}" ]; then
+  claude mcp add -s user --transport http mem0-mcp https://mcp.mem0.ai/mcp \
+    --header "Authorization: Bearer $MEM0_API_KEY" >/dev/null 2>&1 || true
+fi
+
+# --- graphify codebase knowledge graph (pipx:graphifyy, installed by mise) ---
+# Registers the /graphify skill in ~/.claude/skills/graphify. The installer also
+# appends a marker block to ~/.claude/CLAUDE.md; that block already lives in
+# dot_claude/CLAUDE.md and the installer is idempotent, so it will not duplicate.
+if command -v graphify >/dev/null 2>&1 && [ ! -f "$HOME/.claude/skills/graphify/SKILL.md" ]; then
+  graphify install --platform claude >/dev/null 2>&1 || true
+fi
