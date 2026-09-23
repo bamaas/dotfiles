@@ -32,10 +32,9 @@ Rules:
 
 ## Changing my system
 
-My machine config is chezmoi-managed in `/Users/bas/git/dotfiles`. Anything written
-straight into `$HOME` is wiped by the next `chezmoi apply`, so any change meant to
-survive — a tool, an MCP server, a hook, a Claude Code setting — goes through that
-repo. Read its `AGENTS.md` first — layout, workflow and the traps live there.
+My machine config lives in `/Users/bas/git/dotfiles`. Anything written straight into
+`$HOME` gets overwritten from there, so any change meant to survive goes through that
+repo — read its `AGENTS.md` first.
 
 ## Web research
 
