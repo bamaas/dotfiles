@@ -6,6 +6,7 @@ LICENSE
 setup
 
 # secrets (kept local-only, out of the public repo)
+.claude/settings.local.json
 .zshrc.local
 .config/mise/conf.d/secrets.local.toml
 

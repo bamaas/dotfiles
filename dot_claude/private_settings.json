@@ -1,0 +1,551 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "agentPushNotifEnabled": true,
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "claude-hud@claude-hud": true,
+    "dx@ykdojo": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "warp@claude-code-warp": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "repo": "JuliusBrussee/caveman",
+        "source": "github"
+      }
+    },
+    "claude-code-warp": {
+      "source": {
+        "repo": "warpdotdev/claude-code-warp",
+        "source": "github"
+      }
+    },
+    "claude-hud": {
+      "source": {
+        "repo": "jarrodwatts/claude-hud",
+        "source": "github"
+      }
+    },
+    "mem0-plugins": {
+      "source": {
+        "repo": "mem0ai/mem0",
+        "source": "github"
+      }
+    },
+    "ykdojo": {
+      "source": {
+        "repo": "ykdojo/claude-code-tips",
+        "source": "github"
+      }
+    }
+  },
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && SUPERSET_AGENT_ID=claude \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && SUPERSET_AGENT_ID=claude \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/Users/bas/.local/share/mise/installs/npm-lean-ctx-bin/3.10.2/node_modules/.mise/lean-ctx-bin@3.10.2/node_modules/lean-ctx-bin/bin/lean-ctx hook read-dedup",
+            "type": "command"
+          }
+        ],
+        "matcher": "Read"
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && SUPERSET_AGENT_ID=claude \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "$HOME/.claude/hooks/vault-write-guard.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|mcp__lean-ctx__ctx_shell|mcp__lean-ctx__ctx_edit"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/Users/bas/.local/share/mise/installs/npm-lean-ctx-bin/3.10.2/node_modules/.mise/lean-ctx-bin@3.10.2/node_modules/lean-ctx-bin/bin/lean-ctx hook rewrite",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/Users/bas/.local/share/mise/installs/npm-lean-ctx-bin/3.10.2/node_modules/.mise/lean-ctx-bin@3.10.2/node_modules/lean-ctx-bin/bin/lean-ctx hook redirect",
+            "type": "command"
+          }
+        ],
+        "matcher": "Read|read|ReadFile|read_file|View|view|Grep|grep|Search|search|ListFiles|list_files|ListDirectory|list_directory|Glob|glob"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && SUPERSET_AGENT_ID=claude \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && SUPERSET_AGENT_ID=claude \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/share/mise/shims/node\" \"$HOME/.claude/hooks/caveman-activate.js\"",
+            "statusMessage": "Loading caveman mode...",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && SUPERSET_AGENT_ID=claude \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && SUPERSET_AGENT_ID=claude \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/share/mise/shims/node\" \"$HOME/.claude/hooks/caveman-mode-tracker.js\"",
+            "statusMessage": "Tracking caveman mode...",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ]
+  },
+  "inputNeededNotifEnabled": true,
+  "model": "opus",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "high"
+    }
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "MultiEdit",
+      "Bash(ls *)",
+      "Bash(ls)",
+      "Bash(ll *)",
+      "Bash(la *)",
+      "Bash(pwd)",
+      "Bash(which *)",
+      "Bash(type *)",
+      "Bash(echo *)",
+      "Bash(env)",
+      "Bash(printenv *)",
+      "Bash(cat *)",
+      "Bash(bat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(less *)",
+      "Bash(more *)",
+      "Bash(wc *)",
+      "Bash(diff *)",
+      "Bash(file *)",
+      "Bash(stat *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(ag *)",
+      "Bash(find *)",
+      "Bash(fd *)",
+      "Bash(fzf *)",
+      "Bash(locate *)",
+      "Bash(git status *)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git fetch *)",
+      "Bash(git stash list)",
+      "Bash(git stash show *)",
+      "Bash(git blame *)",
+      "Bash(git shortlog *)",
+      "Bash(git tag *)",
+      "Bash(git config --list)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout *)",
+      "Bash(git switch *)",
+      "Bash(git restore *)",
+      "Bash(git merge *)",
+      "Bash(git rebase *)",
+      "Bash(git cherry-pick *)",
+      "Bash(git stash *)",
+      "Bash(git reset *)",
+      "Bash(git clean *)",
+      "Bash(node *)",
+      "Bash(npm run *)",
+      "Bash(npm test *)",
+      "Bash(npm install *)",
+      "Bash(npm ci)",
+      "Bash(npm ci *)",
+      "Bash(npm list *)",
+      "Bash(npm audit *)",
+      "Bash(npm outdated *)",
+      "Bash(npx *)",
+      "Bash(pnpm *)",
+      "Bash(yarn *)",
+      "Bash(bun *)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(pip *)",
+      "Bash(pip3 *)",
+      "Bash(uv *)",
+      "Bash(poetry *)",
+      "Bash(pytest *)",
+      "Bash(ruff *)",
+      "Bash(black *)",
+      "Bash(mypy *)",
+      "Bash(pyright *)",
+      "Bash(go *)",
+      "Bash(gofmt *)",
+      "Bash(golangci-lint *)",
+      "Bash(cargo *)",
+      "Bash(rustc *)",
+      "Bash(rustfmt *)",
+      "Bash(clippy *)",
+      "Bash(make *)",
+      "Bash(just *)",
+      "Bash(kubectl get *)",
+      "Bash(kubectl describe *)",
+      "Bash(kubectl logs *)",
+      "Bash(kubectl explain *)",
+      "Bash(kubectl diff *)",
+      "Bash(kubectl version *)",
+      "Bash(kubectl config *)",
+      "Bash(helm list *)",
+      "Bash(helm status *)",
+      "Bash(helm diff *)",
+      "Bash(helm template *)",
+      "Bash(helm show *)",
+      "Bash(helm history *)",
+      "Bash(docker ps *)",
+      "Bash(docker images *)",
+      "Bash(docker logs *)",
+      "Bash(docker inspect *)",
+      "Bash(docker stats *)",
+      "Bash(docker build *)",
+      "Bash(docker run *)",
+      "Bash(docker exec *)",
+      "Bash(docker compose *)",
+      "Bash(docker-compose *)",
+      "Bash(open *)",
+      "Bash(pbcopy *)",
+      "Bash(pbpaste *)",
+      "Bash(defaults read *)",
+      "Bash(sw_vers)",
+      "Bash(system_profiler *)",
+      "Bash(brew list *)",
+      "Bash(brew info *)",
+      "Bash(brew outdated *)",
+      "Bash(brew search *)",
+      "Bash(brew deps *)",
+      "Bash(brew doctor)",
+      "Bash(ps *)",
+      "Bash(top *)",
+      "Bash(htop *)",
+      "Bash(btop *)",
+      "Bash(lsof *)",
+      "Bash(pgrep *)",
+      "Bash(pkill *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(ping *)",
+      "Bash(nslookup *)",
+      "Bash(dig *)",
+      "Bash(host *)",
+      "Bash(netstat *)",
+      "Bash(ss *)",
+      "Bash(nc *)",
+      "Bash(mkdir *)",
+      "Bash(touch *)",
+      "Bash(mv *)",
+      "Bash(cp *)",
+      "Bash(ln *)",
+      "Bash(chmod *)",
+      "Bash(chown *)",
+      "Bash(sed *)",
+      "Bash(awk *)",
+      "Bash(cut *)",
+      "Bash(sort *)",
+      "Bash(uniq *)",
+      "Bash(tr *)",
+      "Bash(jq *)",
+      "Bash(yq *)",
+      "Bash(xargs *)",
+      "Bash(tar *)",
+      "Bash(zip *)",
+      "Bash(unzip *)",
+      "Bash(gzip *)",
+      "Bash(gunzip *)",
+      "Bash(* --version)",
+      "Bash(* --help)",
+      "Bash(* -h)",
+      "Glob",
+      "Grep",
+      "LS",
+      "TodoRead",
+      "TodoWrite",
+      "WebFetch",
+      "WebSearch",
+      "mcp__lean-ctx__ctx_read",
+      "mcp__lean-ctx__ctx_multi_read",
+      "mcp__lean-ctx__ctx_search",
+      "mcp__lean-ctx__ctx_shell",
+      "mcp__lean-ctx__ctx_tree",
+      "mcp__lean-ctx__ctx_edit",
+      "mcp__lean-ctx__ctx_call",
+      "mcp__lean-ctx__ctx_discover_tools",
+      "mcp__lean-ctx__ctx_knowledge",
+      "mcp__lean-ctx__ctx_session",
+      "mcp__lean-ctx__ctx_semantic_search",
+      "mcp__lean-ctx__ctx_compress",
+      "mcp__lean-ctx__ctx_overview",
+      "mcp__lean-ctx__ctx_preload",
+      "mcp__lean-ctx__ctx_dedup",
+      "mcp__lean-ctx__ctx_expand",
+      "mcp__lean-ctx__ctx_agent",
+      "mcp__lean-ctx__shell",
+      "mcp__lean-ctx__ctx_glob",
+      "mcp__lean-ctx__ctx_compose",
+      "mcp__lean-ctx__ctx_patch",
+      "mcp__lean-ctx__ctx_optimize",
+      "mcp__lean-ctx__ctx_compare",
+      "mcp__lean-ctx__ctx_metrics",
+      "mcp__lean-ctx__ctx_share",
+      "mcp__lean-ctx__ctx_analyze",
+      "mcp__lean-ctx__ctx_benchmark",
+      "mcp__lean-ctx__ctx_cache",
+      "mcp__lean-ctx__ctx_discover",
+      "mcp__lean-ctx__ctx_smart_read",
+      "mcp__lean-ctx__ctx_delta",
+      "mcp__lean-ctx__ctx_fill",
+      "mcp__lean-ctx__ctx_intent",
+      "mcp__lean-ctx__ctx_response",
+      "mcp__lean-ctx__ctx_context",
+      "mcp__lean-ctx__ctx_graph",
+      "mcp__lean-ctx__ctx_symbol",
+      "mcp__lean-ctx__ctx_outline",
+      "mcp__lean-ctx__ctx_callgraph",
+      "mcp__lean-ctx__ctx_refactor",
+      "mcp__lean-ctx__ctx_routes",
+      "mcp__lean-ctx__ctx_cost",
+      "mcp__lean-ctx__ctx_heatmap",
+      "mcp__lean-ctx__ctx_gain",
+      "mcp__lean-ctx__ctx_task",
+      "mcp__lean-ctx__ctx_impact",
+      "mcp__lean-ctx__ctx_architecture",
+      "mcp__lean-ctx__ctx_workflow",
+      "mcp__lean-ctx__ctx_review",
+      "mcp__lean-ctx__ctx_pack",
+      "mcp__lean-ctx__ctx_index",
+      "mcp__lean-ctx__ctx_artifacts",
+      "mcp__lean-ctx__ctx_smells",
+      "mcp__lean-ctx__ctx_quality",
+      "mcp__lean-ctx__ctx_proof",
+      "mcp__lean-ctx__ctx_verify",
+      "mcp__lean-ctx__ctx_execute",
+      "mcp__lean-ctx__ctx_handoff",
+      "mcp__lean-ctx__ctx_feedback",
+      "mcp__lean-ctx__ctx_control",
+      "mcp__lean-ctx__ctx_plan",
+      "mcp__lean-ctx__ctx_compile",
+      "mcp__lean-ctx__ctx_provider",
+      "mcp__lean-ctx__ctx_radar",
+      "mcp__lean-ctx__ctx_retrieve",
+      "mcp__lean-ctx__ctx_compress_memory",
+      "mcp__lean-ctx__ctx_load_tools",
+      "mcp__lean-ctx__ctx"
+    ],
+    "deny": [
+      "Bash(rmdir *)",
+      "Bash(shred *)",
+      "Bash(srm *)",
+      "Bash(sudo *)",
+      "Bash(su *)",
+      "Bash(doas *)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Read(**/id_ecdsa)",
+      "Read(**/.ssh/*)",
+      "Read(**/credentials)",
+      "Read(**/.aws/credentials)",
+      "Read(**/.kube/config)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f)",
+      "Bash(kubectl delete *)",
+      "Bash(kubectl apply *)",
+      "Bash(kubectl patch *)",
+      "Bash(kubectl edit *)",
+      "Bash(kubectl scale *)",
+      "Bash(kubectl rollout restart *)",
+      "Bash(helm uninstall *)",
+      "Bash(helm upgrade *)",
+      "Bash(helm install *)",
+      "Bash(defaults write *)",
+      "Bash(defaults delete *)",
+      "Bash(launchctl *)",
+      "Bash(systemctl *)",
+      "Bash(brew install *)",
+      "Bash(brew uninstall *)",
+      "Bash(brew upgrade *)",
+      "Bash(diskutil *)",
+      "Bash(dd *)",
+      "Bash(mkfs *)",
+      "Bash(fdisk *)",
+      "Read(**/.zsh_history)",
+      "Read(**/.bash_history)",
+      "Read(**/.zshrc)",
+      "Read(**/.bashrc)",
+      "Read(**/.zprofile)",
+      "Read(**/.profile)",
+      "Edit(//Users/bas/lucidvault/lucidvault/**)",
+      "Grep",
+      "Glob"
+    ]
+  },
+  "remoteControlAtStartup": true,
+  "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "statusLine": {
+    "command": "bash -c 'd=$(ls -dt \"$HOME\"/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1); exec node \"${d}dist/index.js\"'",
+    "type": "command"
+  },
+  "theme": "dark",
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "voiceEnabled": true
+}
