@@ -45,6 +45,10 @@ straight into `$HOME` is wiped on the next `chezmoi apply`.
   file — copy the change back into `dot_claude/CLAUDE.md` afterwards.
 - Never commit secrets. Machine-local secrets live in
   `~/.config/mise/conf.d/secrets.local.toml` (chezmoi-ignored); scripts read them from env.
+- Claude Code settings are split: portable keys in `dot_claude/private_settings.json`,
+  machine-local ones (`mcpServers`, anything holding a key) in `~/.claude/settings.local.json`,
+  which Claude Code merges on top and chezmoi ignores. Never move an MCP server with a
+  key in its URL into the tracked half.
 - After changing the repo, run `chezmoi status` to confirm `$HOME` matches, and commit.
 
 
