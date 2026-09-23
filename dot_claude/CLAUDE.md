@@ -35,8 +35,7 @@ Rules:
 My machine config is chezmoi-managed in `/Users/bas/git/dotfiles`. Anything written
 straight into `$HOME` is wiped by the next `chezmoi apply`, so any change meant to
 survive — a tool, an MCP server, a hook, a Claude Code setting — goes through that
-repo. Read its `CLAUDE.md` before touching it; it carries the layout, the workflow
-and the traps.
+repo. Read its `AGENTS.md` first — layout, workflow and the traps live there.
 
 ## Web research
 
