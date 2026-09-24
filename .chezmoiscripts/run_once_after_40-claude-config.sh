@@ -6,7 +6,10 @@ set -eu
 
 # mise shims (node / lean-ctx / claude / yq) must be resolvable here. Script 10
 # already ran `mise install`, so the shims exist by now.
-export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+# ~/.local/bin stays ahead of the shims: mise points every shim it writes at
+# whatever `mise` resolves to on PATH, so a shims-first PATH makes a reshim
+# aim them all at shims/mise — self-referential, ELOOP for every tool.
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
 mkdir -p "$HOME/.claude"
 

@@ -61,3 +61,9 @@ chezmoi ignores. Never move an MCP server with a key in its URL into the tracked
   `chezmoi add ~/.claude/settings.json`.
 - **Hook commands** use `$HOME` and the mise shims
   (`~/.local/share/mise/shims/<tool>`), never a versioned install path.
+- **Never let the shims dir precede `~/.local/bin` on PATH**, and never install
+  `mise` as a mise tool (`aqua:jdx/mise`). mise points every shim it writes at
+  whatever `mise` resolves to on PATH. With a `mise` shim present and a
+  shims-first PATH, one `mise reshim` aims all ~250 shims at `shims/mise`, which
+  then points at itself — `too many levels of symbolic links` for every tool.
+  Recover with `PATH=~/.local/bin:$PATH ~/.local/bin/mise reshim --force`.
