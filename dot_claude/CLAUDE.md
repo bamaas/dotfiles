@@ -9,6 +9,8 @@ Search broadly: expand the query with adjacent terms, then do a second pass foll
 ## Context store routing
 
 Four stores. Pick one per question; never search two for the same thing.
+Stores are exclusive; **sources are not** — the vault and the web answer the same
+question from different corpora, so blend them (see **Web research**), never pick one.
 
 | Question | Store | How |
 |---|---|---|
@@ -48,9 +50,18 @@ When the user provides a URL and asks about its contents:
 - Do not use Tavily for URLs the user already provided unless Jina fails.
 
 ### Web search
-When the user asks to find, research, compare, or discover information:
-- Use Tavily search.
-- Prefer Tavily over general web browsing.
+Any substantive or factual question runs two lanes in parallel:
+1. **Vault** — grep `/Users/bas/lucidvault/lucidvault/index.md` with the expanded
+   query (synonyms, abbreviations, adjacent terms). Hit → read the `wiki/` page and
+   follow its [[wikilinks]]. No hit → say "nothing in your vault covers this"
+   before answering from the web.
+2. **Web** — Tavily search, then Jina extract. Prefer Tavily over general browsing.
+
+Merge: the vault leads by default (curated, higher trust). Exception — the question
+is time-sensitive and the web result is newer than the page's `last_updated`: the
+web leads, and flag the vault page as possibly stale. Cite each lane separately; a
+vault answer must carry the page's `source:` URL verbatim. If a web source proved
+high-value and the vault lacks it, offer `mcp__lucidvault__add_bookmark`.
 
 ### Multiple sources
 For research tasks requiring multiple sources:
