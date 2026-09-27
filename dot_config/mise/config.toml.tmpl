@@ -2,7 +2,16 @@
 # --- lean set: installed everywhere, incl. Linux dev containers ---
 neovim = "latest"
 node = "latest"
-"npm:lean-ctx-bin" = { version = "latest", allow_low_downloads = true }
+# Pinned, not "latest": lean-ctx rewrites its own hook commands in
+# `~/.claude/settings.json` (and its MCP entry in `~/.claude.json`) to
+# version-pinned absolute install paths whenever its server starts
+# (`…/installs/npm-lean-ctx-bin/<ver>/…/bin/lean-ctx`). A silent upgrade deletes
+# the path those rewritten hooks point at and every one of them breaks. Pinning
+# keeps the paths valid, so an upgrade is a deliberate step: bump here, apply,
+# then re-sync with `chezmoi add ~/.claude/settings.json` (see AGENTS.md).
+# allow_low_downloads: the npm backend refuses packages under 1000 weekly
+# downloads and this one sits near 900.
+"npm:lean-ctx-bin" = { version = "3.10.4", allow_low_downloads = true }
 ripgrep = "latest"
 fzf = "latest"
 "github:sharkdp/bat" = "0.26.1"
