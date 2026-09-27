@@ -81,10 +81,10 @@ Inside, run `claude`.
 
 ### Container notes
 
-- **Lean vs full tools:** containers get the lean set (node, neovim, ripgrep,
-  fzf, bat, eza, zoxide, yq, lazygit, direnv, gh, zellij). The heavy set (go,
-  python, terraform, k8s tooling) is macOS-only — see the `darwin` branch in
-  `dot_config/mise/config.toml.tmpl`.
+- **Lean vs full tools:** dev containers get the lean set (node, lean-ctx,
+  neovim, ripgrep, fzf, bat, eza, zoxide, yq, lazygit, gh, zellij). Real hosts —
+  macOS and Linux VMs — also get the heavy set (go, python, terraform, k8s
+  tooling); see the `DEVCONTAINER` branch in `dot_config/mise/config.toml.tmpl`.
 - **Claude Code auth:** the container reads `CLAUDE_CODE_OAUTH_TOKEN` from the
   host env. Generate it once with `claude setup-token`.
 - **Docker:** the host socket is mounted and `docker-ce-cli` is baked in —

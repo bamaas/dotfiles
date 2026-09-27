@@ -2,8 +2,9 @@
 
 <!-- lucidvault:start -->
  ## My personal knowledge vault
-When I ask about my own notes, bookmarks, or saved articles (or say "vault"), read it directly from `/Users/bas/lucidvault/lucidvault/` — start with that folder's `AGENTS.md` and follow it (source of truth for how to search and cite). 
+When I ask about my own notes, bookmarks, or saved articles (or say "vault"), read it directly from `~/lucidvault/lucidvault/` — start with that folder's `AGENTS.md` and follow it (source of truth for how to search and cite). 
 Search broadly: expand the query with adjacent terms, then do a second pass following [[wikilinks]] and shared tags before concluding. For any web search, use the Tavily MCP tools (tavily-search / tavily-extract), not the built-in WebSearch.
+If that directory does not exist, the vault is not present on this machine: say so rather than guessing. The `lucidvault` MCP server can still help with discovery via `related_notes` and `expand_graph`.
 <!-- lucidvault:end -->
 
 ## Context store routing
@@ -17,7 +18,7 @@ question from different corpora, so blend them (see **Web research**), never pic
 | Where is X / what calls Y / current code structure | the code | `ctx_search`, `ctx_compose` |
 | Architecture, multi-hop call paths, code+docs+SQL in one view | graphify | `/graphify query "..."` |
 | Why we chose X / rejected Y / my preferences / past gotcha | mem0 | `mcp__mem0-mcp__search_memories` |
-| My notes, bookmarks, saved articles, research | lucidvault | read `/Users/bas/lucidvault/lucidvault/` directly |
+| My notes, bookmarks, saved articles, research | lucidvault | read `~/lucidvault/lucidvault/` directly |
 
 Rules:
 - Never store in mem0 anything re-derivable from a repo (file paths, signatures,
@@ -34,7 +35,7 @@ Rules:
 
 ## Changing my system
 
-My machine config lives in `/Users/bas/git/dotfiles`. Anything written straight into
+My machine config lives in `~/git/dotfiles`. Anything written straight into
 `$HOME` gets overwritten from there, so any change meant to survive goes through that
 repo — read its `AGENTS.md` first.
 
@@ -51,7 +52,7 @@ When the user provides a URL and asks about its contents:
 
 ### Web search
 Any substantive or factual question runs two lanes in parallel:
-1. **Vault** — grep `/Users/bas/lucidvault/lucidvault/index.md` with the expanded
+1. **Vault** — grep `~/lucidvault/lucidvault/index.md` with the expanded
    query (synonyms, abbreviations, adjacent terms). Hit → read the `wiki/` page and
    follow its [[wikilinks]]. No hit → say "nothing in your vault covers this"
    before answering from the web.

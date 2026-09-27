@@ -14,21 +14,30 @@
 set -euo pipefail
 
 # --- KILL SWITCH ---------------------------------------------------------
-# Guard temporarily disabled at user request (2026-07-09). Hook stays wired
-# in settings.json; flip GUARD_ENABLED to 1 to re-enable the write guard.
-GUARD_ENABLED=0
+GUARD_ENABLED=1
 [ "$GUARD_ENABLED" = "1" ] || exit 0
 # -------------------------------------------------------------------------
 
-VAULT="/Users/bas/lucidvault/lucidvault"
-
-input="$(cat)"
-tool="$(printf '%s' "$input" | jq -r '.tool_name // empty')"
+VAULT="$HOME/lucidvault/lucidvault"
+# No vault on this machine (dev containers; the VM before sync is up) -> no-op.
+[ -d "$VAULT" ] || exit 0
 
 deny() {
   printf '%s\n' "$1" >&2
   exit 2
 }
+
+# Without jq the guard cannot inspect the payload. Exit 2 (block) rather than
+# letting `set -e` exit 127, which Claude Code treats as NON-blocking -- i.e.
+# the vault write would be allowed while the hook still looks wired.
+command -v jq >/dev/null 2>&1 || \
+  deny "vault-write-guard: jq unavailable; refusing to allow an unchecked vault write."
+
+input="$(cat)"
+tool="$(printf '%s' "$input" | jq -r '.tool_name // empty')" \
+  || deny "vault-write-guard: unparseable hook payload; refusing to allow an unchecked vault write."
+[ -n "$tool" ] \
+  || deny "vault-write-guard: hook payload has no tool_name; refusing to allow an unchecked vault write."
 
 refs_vault() {
   case "$1" in
@@ -41,18 +50,18 @@ refs_vault() {
 }
 
 case "$tool" in
-  mcp__lean-ctx__ctx_edit)
+  mcp__lean-ctx__ctx_edit | mcp__lean-ctx__ctx_patch)
     path="$(printf '%s' "$input" | jq -r '.tool_input.path // empty')"
     if refs_vault "$path"; then
       deny "Vault is read-only for direct edits. Write via the lucidvault MCP tools (update_wiki / add_note / add_bookmark / delete_page)."
     fi
     ;;
-  Bash | mcp__lean-ctx__ctx_shell)
+  Bash | mcp__lean-ctx__ctx_shell | mcp__lean-ctx__shell)
     cmd="$(printf '%s' "$input" | jq -r '.tool_input.command // empty')"
     if refs_vault "$cmd"; then
       # Write verbs / redirections. Conservative: a read that redirects elsewhere
       # while merely referencing the vault path is also blocked (err toward deny).
-      if printf '%s' "$cmd" | grep -Eq '(>>?|[[:space:]]tee[[:space:]]|(^|[[:space:]])(mv|cp|rm|rmdir|touch|mkdir|ln|dd|truncate|unlink|chmod|chown)[[:space:]]|sed[[:space:]][^|]*-i)'; then
+      if printf '%s' "$cmd" | grep -Eq '(>>?|(^|[[:space:]])(tee|mv|cp|rm|rmdir|touch|mkdir|ln|dd|truncate|unlink|chmod|chown)[[:space:]]|sed[[:space:]][^|]*-i)'; then
         deny "Direct writes to the vault are denied. Use the lucidvault MCP tools (update_wiki / add_note / add_bookmark / delete_page)."
       fi
     fi

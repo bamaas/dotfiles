@@ -1,6 +1,8 @@
 [tools]
 # --- lean set: installed everywhere, incl. Linux dev containers ---
 neovim = "latest"
+node = "latest"
+"npm:lean-ctx-bin" = { version = "latest", allow_low_downloads = true }
 ripgrep = "latest"
 fzf = "latest"
 "github:sharkdp/bat" = "0.26.1"
@@ -20,16 +22,12 @@ kubectl = "1.29.11"
 "aqua:derailed/k9s" = "0.32.7"
 "asdf:Antiarchitect/asdf-helm" = "3.16.3"   # default `helm`/aqua backend has a broken URL
 
-# --- node + lean-ctx: macOS host AND Linux dev containers ---
-# node is required by the npm backend that provides lean-ctx (and by the
-# claude-hud statusline). DEVCONTAINER=1 is exported in the Dockerfile.
-{{- if or (eq .chezmoi.os "darwin") (env "DEVCONTAINER") }}
-node = "latest"
-"npm:lean-ctx-bin" = { version = "latest", allow_low_downloads = true }
-{{- end }}
-{{- if eq .chezmoi.os "darwin" }}
+{{- if not (env "DEVCONTAINER") }}
 
-# --- full set: macOS host only (heavy: go/python/terraform/k8s tooling) ---
+# --- full set: real hosts, macOS + Linux VMs (heavy: go/python/terraform/k8s).
+# Skipped in dev containers, which stay lean. DEVCONTAINER=1 is exported in
+# the Dockerfile (.devcontainer/Dockerfile:18). Non-empty string test, so
+# DEVCONTAINER=0 also selects the lean set.
 argocd = "2.13.1"
 "github:anomalyco/opencode" = "latest"
 go = "1.23.3"

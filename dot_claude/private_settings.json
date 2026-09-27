@@ -75,7 +75,7 @@
       {
         "hooks": [
           {
-            "command": "/Users/bas/.local/share/mise/installs/npm-lean-ctx-bin/3.10.2/node_modules/.mise/lean-ctx-bin@3.10.2/node_modules/lean-ctx-bin/bin/lean-ctx hook read-dedup",
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook read-dedup",
             "type": "command"
           }
         ],
@@ -112,12 +112,12 @@
             "type": "command"
           }
         ],
-        "matcher": "Bash|mcp__lean-ctx__ctx_shell|mcp__lean-ctx__ctx_edit"
+        "matcher": "Bash|mcp__lean-ctx__ctx_shell|mcp__lean-ctx__shell|mcp__lean-ctx__ctx_edit|mcp__lean-ctx__ctx_patch"
       },
       {
         "hooks": [
           {
-            "command": "/Users/bas/.local/share/mise/installs/npm-lean-ctx-bin/3.10.2/node_modules/.mise/lean-ctx-bin@3.10.2/node_modules/lean-ctx-bin/bin/lean-ctx hook rewrite",
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook rewrite",
             "type": "command"
           }
         ],
@@ -126,7 +126,7 @@
       {
         "hooks": [
           {
-            "command": "/Users/bas/.local/share/mise/installs/npm-lean-ctx-bin/3.10.2/node_modules/.mise/lean-ctx-bin@3.10.2/node_modules/lean-ctx-bin/bin/lean-ctx hook redirect",
+            "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook redirect",
             "type": "command"
           }
         ],
@@ -529,7 +529,7 @@
       "Read(**/.bashrc)",
       "Read(**/.zprofile)",
       "Read(**/.profile)",
-      "Edit(//Users/bas/lucidvault/lucidvault/**)",
+      "Edit(~/lucidvault/lucidvault/**)",
       "Grep",
       "Glob"
     ]
