@@ -1,4 +1,18 @@
 
+# mise shims for shells that read nothing else. `ssh host 'cmd'` gets a shell that is
+# neither interactive nor login, so .zshrc (where `mise activate` lives) and .zprofile
+# are both skipped and no mise-managed tool resolves — which is how this box is driven
+# (`ssh devbox 'claude -p ...'`, `ssh devbox 'zellij ...'`).
+# ~/.local/bin goes ahead of the shims dir on purpose: mise aims every shim it writes
+# at whatever `mise` resolves to on PATH, so shims-first makes one `mise reshim` point
+# all of them at shims/mise and thus at itself (see AGENTS.md).
+# Interactive shells are skipped — `mise activate` prepends the shims dir there itself,
+# and .zshrc restores ~/.local/bin in front of it; doing it here too would list it twice.
+if [[ ! -o interactive ]] && [ -d "$HOME/.local/share/mise/shims" ] \
+  && [[ ":$PATH:" != *":$HOME/.local/share/mise/shims:"* ]]; then
+  export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+fi
+
 # >>> lean-ctx shell hook >>>
 # Passthrough stubs: ensure _lc/_lc_compress exist in ALL zsh contexts
 # (non-interactive subshells, eval, agent harnesses) so aliases that
