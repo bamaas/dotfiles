@@ -51,18 +51,29 @@ if [ -x "$LEANCTX_BIN" ] && command -v claude >/dev/null 2>&1; then
 fi
 
 # --- claude-hud statusline plugin (github.com/jarrodwatts/claude-hud) --------
-# Add the marketplace + install the plugin (git clone / file copy, no API auth),
-# then wire the statusLine command. `/claude-hud:setup` is interactive, so we
-# write the statusLine ourselves — same shape as the host, but resolving `node`
-# off PATH (mise shim) and picking the newest cached plugin build.
-# Skipped once ~/.claude/settings.json already carries a statusLine: that file is
-# chezmoi-managed now, and `yq -i` rewrites it whole (reordering every key), which
-# would leave the target permanently dirty against the source.
-if command -v claude >/dev/null 2>&1 && command -v yq >/dev/null 2>&1 \
-   && ! grep -q '"statusLine"' "$HOME/.claude/settings.json" 2>/dev/null; then
+# Two independent steps, two independent guards.
+#
+# 1. Install the plugin (git clone / file copy, no API auth). The guard tests the
+#    plugin, not the setting: chezmoi has already written the tracked
+#    settings.json, which ships both `statusLine` and `enabledPlugins`, so a
+#    `"statusLine"` test is true on every fresh machine and used to skip the
+#    install — leaving a statusLine that execs an empty plugin cache dir.
+#    `claude plugin install` is a slow network round-trip, so only run it when the
+#    plugin is not registered yet.
+if command -v claude >/dev/null 2>&1 \
+   && ! grep -q '"claude-hud@claude-hud"' "$HOME/.claude/plugins/installed_plugins.json" 2>/dev/null; then
   claude plugin marketplace add jarrodwatts/claude-hud >/dev/null 2>&1 || true
   claude plugin install claude-hud@claude-hud -s user >/dev/null 2>&1 || true
+fi
 
+# 2. Wire the statusLine ourselves (`/claude-hud:setup` is interactive) — same
+#    shape as the host, but resolving `node` off PATH (mise shim) and picking the
+#    newest cached plugin build. Only when settings.json does not already carry a
+#    statusLine: that file is chezmoi-managed, and `yq -i` rewrites it whole
+#    (reordering every key), which would leave the target permanently dirty
+#    against the source. Reached only where settings.json is minimal or absent.
+if command -v yq >/dev/null 2>&1 \
+   && ! grep -q '"statusLine"' "$HOME/.claude/settings.json" 2>/dev/null; then
   HUD_CMD="$(cat <<'EOF'
 bash -c 'd=$(ls -dt "$HOME"/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1); exec node "${d}dist/index.js"'
 EOF
@@ -110,6 +121,16 @@ fi
 if command -v claude >/dev/null 2>&1 && [ -n "${MEM0_API_KEY:-}" ]; then
   claude mcp add -s user --transport http mem0-mcp https://mcp.mem0.ai/mcp \
     --header "Authorization: Bearer $MEM0_API_KEY" >/dev/null 2>&1 || true
+fi
+
+# --- tavily web search MCP (hosted: https://mcp.tavily.com/mcp/) -------------
+# Key-in-URL rather than OAuth: Tavily's OAuth flow completes through a localhost
+# callback listener, which a headless VM cannot serve.
+# TAVILY_API_KEY comes from ~/.config/mise/conf.d/secrets.local.toml (never
+# committed); skipped silently when the secret is not in the env.
+if command -v claude >/dev/null 2>&1 && [ -n "${TAVILY_API_KEY:-}" ]; then
+  claude mcp add -s user --transport http tavily \
+    "https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY" >/dev/null 2>&1 || true
 fi
 
 # --- graphify codebase knowledge graph (pipx:graphifyy, installed by mise) ---

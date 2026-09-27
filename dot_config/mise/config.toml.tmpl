@@ -50,6 +50,12 @@ zarf = "latest"
 
 [settings]
 experimental = true
+# `mise install` aborts with "No GitHub artifact attestations found for
+# python@3.13.0" on a fresh box: python-build-standalone's older releases have no
+# attestation to verify, and one failed tool fails the whole run — which takes
+# run_once_after_10 (set -eu) and the entire bootstrap with it. Verification of
+# every other backend (aqua, github) is untouched.
+python.github_attestations = false
 
 [env]
 # Machine-local env (KUBECONFIG, trusted paths, secrets) lives in
