@@ -87,7 +87,10 @@ web_client {
 // 
 default_mode "normal"
  
-copy_command "pbcopy"
+// No copy_command on purpose: this config is shared with headless Linux boxes
+// (devbox) that have no pbcopy/xclip/wl-copy and no X11/Wayland, where shelling
+// out fails with "Error using the system clipboard". Unset, zellij emits OSC 52
+// instead, which the terminal emulator handles -- so copy works over ssh too.
 copy_on_select true
 
 // Choose the path to the default shell that zellij will use for opening new panes
