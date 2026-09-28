@@ -23,8 +23,10 @@ question from different corpora, so blend them (see **Web research**), never pic
 Rules:
 - Never store in mem0 anything re-derivable from a repo (file paths, signatures,
   structure, past fixes). Code moves; mem0 does not notice.
-- mem0 holds only: decisions + why, rejected options, env quirks, my preferences.
-- Search mem0 before answering about prior decisions. Do not make me re-explain one.
+- mem0 holds only: decisions + why, rejected options, env quirks, my preferences,
+  and mistakes with their cause. Store a mistake the moment it costs real time.
+- Search mem0 before answering or acting. Do not repeat a mistake it records, and
+  do not make me re-explain a decision.
 - On conflict about current code: the code wins over graphify's index, which wins
   over mem0.
 - Rebuild the graphify index after a large refactor. A stale graph is worse than none.
