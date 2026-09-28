@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # vault-write-guard — PreToolUse hook.
 # Blocks WRITE actions against the LucidVault vault so all mutations are forced
-# through the lucidvault MCP server (add_note/add_bookmark/update_wiki/delete_page).
+# through the lucidvault MCP server (add_note/add_bookmark/update_wiki/edit_page/
+# delete_page). Tool list verified against lucidvault 0.24.0; there is no search tool.
 # Reads are left untouched (native-first retrieval, ADR-023).
 #
 # Covers the holes that path-scoped permission deny rules cannot:
@@ -53,7 +54,7 @@ case "$tool" in
   mcp__lean-ctx__ctx_edit | mcp__lean-ctx__ctx_patch)
     path="$(printf '%s' "$input" | jq -r '.tool_input.path // empty')"
     if refs_vault "$path"; then
-      deny "Vault is read-only for direct edits. Write via the lucidvault MCP tools (update_wiki / add_note / add_bookmark / delete_page)."
+      deny "Vault is read-only for direct edits. Write via the lucidvault MCP tools (update_wiki for one section, edit_page for a whole page, add_note / add_bookmark / delete_page)."
     fi
     ;;
   Bash | mcp__lean-ctx__ctx_shell | mcp__lean-ctx__shell)
@@ -72,7 +73,7 @@ case "$tool" in
       # Write verbs / redirections. Conservative: a read that redirects elsewhere
       # while merely referencing the vault path is also blocked (err toward deny).
       if printf '%s' "$probe" | grep -Eq '(>>?|(^|[[:space:]])(tee|mv|cp|rm|rmdir|touch|mkdir|ln|dd|truncate|unlink|chmod|chown)[[:space:]]|sed[[:space:]][^|]*-i)'; then
-        deny "Direct writes to the vault are denied. Use the lucidvault MCP tools (update_wiki / add_note / add_bookmark / delete_page)."
+        deny "Direct writes to the vault are denied. Use the lucidvault MCP tools (update_wiki for one section, edit_page for a whole page, add_note / add_bookmark / delete_page)."
       fi
     fi
     ;;

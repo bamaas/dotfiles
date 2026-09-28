@@ -133,6 +133,21 @@ if command -v claude >/dev/null 2>&1 && [ -n "${TAVILY_API_KEY:-}" ]; then
     "https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY" >/dev/null 2>&1 || true
 fi
 
+# --- lucidvault knowledge-vault MCP (LAN: 192.168.8.173:8080) ---------------
+# No auth: the server is unauthenticated and LAN-only, so the URL is the whole
+# config and is safe to commit. Registered unconditionally, NOT behind a
+# reachability probe: a dead HTTP server costs only a "failed to connect" line
+# that self-heals the moment the machine is back on the LAN, whereas a probe
+# would silently skip registration on every rebuild done off-LAN (e.g. over VPN,
+# where .173 has timed out before) and leave the vault unwritable.
+# Unwritable is the real failure mode: the vault's write-guard refuses direct
+# file writes and points at this server's tools (update_wiki / add_note /
+# add_bookmark / delete_page), so without it there is no write path at all.
+if command -v claude >/dev/null 2>&1; then
+  claude mcp add -s user --transport http lucidvault \
+    http://192.168.8.173:8080/mcp >/dev/null 2>&1 || true
+fi
+
 # --- graphify codebase knowledge graph (pipx:graphifyy, installed by mise) ---
 # Registers the /graphify skill in ~/.claude/skills/graphify. The installer also
 # appends a marker block to ~/.claude/CLAUDE.md; that block already lives in
