@@ -36,6 +36,17 @@ fi
 
 alias k='kubectl '
 
+# Attach the devbox VM's zellij session (created on first use); `devbox foo` picks
+# another session. On devbox itself there is nothing to ssh to, so attach locally.
+# Named for the ssh host, which still works -- this only fires as the command word.
+devbox() {
+  if [[ "${HOST%%.*}" == devbox ]]; then
+    zellij attach -c "${1:-main}"
+  else
+    ssh -t devbox "zellij attach -c ${(q)1:-main}"
+  fi
+}
+
 export PATH="$HOME/.local/bin:$PATH"
 # macOS-specific tool paths (harmless if absent)
 [ -d "$HOME/.codeium/windsurf/bin" ] && export PATH="$HOME/.codeium/windsurf/bin:$PATH"
