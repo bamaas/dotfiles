@@ -480,6 +480,14 @@
       "mcp__lean-ctx__ctx"
     ],
     "deny": [
+{{- /* Two darwin-only blocks below. On the Linux VM (devbox) these denies only
+       protect the VM from itself, and a deny always beats an allow, so they have
+       to be absent from the rendered file rather than overridden. What stays on
+       every OS reaches outside the VM or is policy: cluster mutations (KUBECONFIG
+       is in the VM's secrets), force-push, Grep/Glob (lean-ctx forces ctx_*), and
+       the MCP-write-only vault. Every entry carries a trailing comma except the
+       final "Glob", so both renders stay valid JSON whichever blocks drop out. */}}
+{{- if eq .chezmoi.os "darwin" }}
       "Bash(rmdir *)",
       "Bash(shred *)",
       "Bash(srm *)",
@@ -492,11 +500,14 @@
       "Read(**/.ssh/*)",
       "Read(**/credentials)",
       "Read(**/.aws/credentials)",
-      "Read(**/.kube/config)",
       "Read(**/*.pem)",
       "Read(**/*.key)",
       "Read(**/*.p12)",
       "Read(**/*.pfx)",
+{{- end }}
+{{- /* Kept on every OS: KUBECONFIG reaches real clusters, which is also why the
+       kubectl mutations below stay denied. Not a VM-local secret. */}}
+      "Read(**/.kube/config)",
       "Bash(git push --force*)",
       "Bash(git push -f*)",
       "Bash(git push * --force*)",
@@ -510,6 +521,7 @@
       "Bash(helm uninstall *)",
       "Bash(helm upgrade *)",
       "Bash(helm install *)",
+{{- if eq .chezmoi.os "darwin" }}
       "Bash(defaults write *)",
       "Bash(defaults delete *)",
       "Bash(launchctl *)",
@@ -527,6 +539,7 @@
       "Read(**/.bashrc)",
       "Read(**/.zprofile)",
       "Read(**/.profile)",
+{{- end }}
       "Edit(~/lucidvault/lucidvault/**)",
       "Grep",
       "Glob"

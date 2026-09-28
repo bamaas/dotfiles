@@ -39,12 +39,22 @@ if [ -x "$LEANCTX_BIN" ] && command -v claude >/dev/null 2>&1; then
   # `lean-ctx init` seeds ~/.claude/skills/lean-ctx, so its absence means first run.
   # It also rewrites its hook entries in settings.json to absolute versioned paths
   # and relocates the zshrc hook block — this repo owns both files, so restore them
-  # from the source dir afterwards (a nested `chezmoi apply` would deadlock).
+  # afterwards (a nested `chezmoi apply` would deadlock).
+  # settings.json is restored from the applied target, not from the source dir:
+  # the source is dot_claude/private_settings.json.tmpl (OS-conditional deny list),
+  # so copying it raw would write template text instead of JSON. Files are applied
+  # before run_once_after scripts, so the target is already the rendered copy.
   if [ ! -d "$HOME/.claude/skills/lean-ctx" ]; then
+    settings_bak=""
+    if [ -f "$HOME/.claude/settings.json" ]; then
+      settings_bak="$(mktemp)"
+      cp "$HOME/.claude/settings.json" "$settings_bak"
+    fi
     "$LEANCTX_BIN" init --agent claude >/dev/null 2>&1 || true
-    if [ -f "${CHEZMOI_SOURCE_DIR:-}/dot_claude/private_settings.json" ]; then
-      cp "$CHEZMOI_SOURCE_DIR/dot_claude/private_settings.json" "$HOME/.claude/settings.json"
+    if [ -n "$settings_bak" ]; then
+      cp "$settings_bak" "$HOME/.claude/settings.json"
       chmod 600 "$HOME/.claude/settings.json"
+      rm -f "$settings_bak"
     fi
     [ -f "${CHEZMOI_SOURCE_DIR:-}/dot_zshrc" ] && cp "$CHEZMOI_SOURCE_DIR/dot_zshrc" "$HOME/.zshrc"
   fi

@@ -8,7 +8,10 @@ node = "latest"
 # (`…/installs/npm-lean-ctx-bin/<ver>/…/bin/lean-ctx`). A silent upgrade deletes
 # the path those rewritten hooks point at and every one of them breaks. Pinning
 # keeps the paths valid, so an upgrade is a deliberate step: bump here, apply,
-# then re-sync with `chezmoi add ~/.claude/settings.json` (see AGENTS.md).
+# then hand-edit the three lean-ctx hook `command` strings in
+# `dot_claude/private_settings.json.tmpl`. NOT `chezmoi add ~/.claude/settings.json`:
+# that source is a template now and `add` would flatten its OS conditionals
+# (see AGENTS.md).
 # allow_low_downloads: the npm backend refuses packages under 1000 weekly
 # downloads and this one sits near 900.
 "npm:lean-ctx-bin" = { version = "3.10.4", allow_low_downloads = true }

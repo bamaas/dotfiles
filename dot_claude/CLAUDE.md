@@ -73,7 +73,11 @@ For research tasks requiring multiple sources:
 
 ## How I want you to work
 
-- Keep answers short and to the point.
+- Answer in 4 lines of prose or fewer. Tables, diffs and commands don't count.
+- Lead with the answer. No preamble, no restating my question, no closing summary.
+- Report what happened in one line, not what you are about to do. Evidence only if
+  I ask or if it changes my decision.
+- Long prose only when I ask for it. If you think I need more, offer it in one line.
 - Prefer concrete examples over abstract theory.
 - If something is not clear, keep asking me until you have no questions left.
 - You decide the needed effort level for subagents.
