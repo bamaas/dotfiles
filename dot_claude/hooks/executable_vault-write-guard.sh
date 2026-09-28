@@ -59,9 +59,16 @@ case "$tool" in
   Bash | mcp__lean-ctx__ctx_shell | mcp__lean-ctx__shell)
     cmd="$(printf '%s' "$input" | jq -r '.tool_input.command // empty')"
     if refs_vault "$cmd"; then
+      # Discarding or duplicating a descriptor is not a write, but the bare `>`
+      # in `2>/dev/null` / `2>&1` looked like one and denied plain reads. Strip
+      # exactly those forms first; a real target (`2> vault/err.log`) survives.
+      probe="$(printf '%s' "$cmd" | sed -E \
+        -e 's@[0-9]+>[[:space:]]*/dev/null([[:space:]]|$)@\1@g' \
+        -e 's/[0-9]*>&[0-9]+//g' \
+        -e 's/[0-9]*>&-//g')"
       # Write verbs / redirections. Conservative: a read that redirects elsewhere
       # while merely referencing the vault path is also blocked (err toward deny).
-      if printf '%s' "$cmd" | grep -Eq '(>>?|(^|[[:space:]])(tee|mv|cp|rm|rmdir|touch|mkdir|ln|dd|truncate|unlink|chmod|chown)[[:space:]]|sed[[:space:]][^|]*-i)'; then
+      if printf '%s' "$probe" | grep -Eq '(>>?|(^|[[:space:]])(tee|mv|cp|rm|rmdir|touch|mkdir|ln|dd|truncate|unlink|chmod|chown)[[:space:]]|sed[[:space:]][^|]*-i)'; then
         deny "Direct writes to the vault are denied. Use the lucidvault MCP tools (update_wiki / add_note / add_bookmark / delete_page)."
       fi
     fi

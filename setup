@@ -28,6 +28,11 @@ CHEZMOI="$(command -v chezmoi 2>/dev/null || echo "$HOME/.local/bin/chezmoi")"
 echo ">> Applying dotfiles..."
 "$CHEZMOI" init --source="$DOTDIR" --apply
 
+# `init --source=` does not persist sourceDir, so a later bare `chezmoi update`
+# looks in ~/.local/share/chezmoi and fails on a rebuilt machine.
+mkdir -p "$HOME/.config/chezmoi"
+printf 'sourceDir = "%s"\n' "$DOTDIR" > "$HOME/.config/chezmoi/chezmoi.toml"
+
 # Make zsh the login shell if available and not already (dev-container bases
 # often default to bash, so `--dotfiles` sessions would miss the zsh config).
 # Non-fatal; on a machine where zsh is already the shell this is a no-op.
