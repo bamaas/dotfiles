@@ -486,8 +486,6 @@
       "Bash(sudo *)",
       "Bash(su *)",
       "Bash(doas *)",
-      "Read(**/.env)",
-      "Read(**/.env.*)",
       "Read(**/id_rsa)",
       "Read(**/id_ed25519)",
       "Read(**/id_ecdsa)",
