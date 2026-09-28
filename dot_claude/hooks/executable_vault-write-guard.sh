@@ -62,8 +62,11 @@ case "$tool" in
       # Discarding or duplicating a descriptor is not a write, but the bare `>`
       # in `2>/dev/null` / `2>&1` looked like one and denied plain reads. Strip
       # exactly those forms first; a real target (`2> vault/err.log`) survives.
+      # The /dev/null strip must fire wherever the redirection ends -- before any
+      # shell metacharacter (`;` `)` `|` `&` `}` backtick), whitespace, or EOL --
+      # otherwise `... 2>/dev/null; echo x` keeps a bare `>` and denies a read.
       probe="$(printf '%s' "$cmd" | sed -E \
-        -e 's@[0-9]+>[[:space:]]*/dev/null([[:space:]]|$)@\1@g' \
+        -e 's@[0-9]+>[[:space:]]*/dev/null([[:space:];)|&}`]|$)@\1@g' \
         -e 's/[0-9]*>&[0-9]+//g' \
         -e 's/[0-9]*>&-//g')"
       # Write verbs / redirections. Conservative: a read that redirects elsewhere
