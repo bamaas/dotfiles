@@ -54,11 +54,11 @@ half.
   hook again does not replace it — both fire. That is how the caveman preamble was
   injected twice per session and its reminder twice per prompt. Before adding a hook
   to `dot_claude/private_settings.json.tmpl`, check the plugin does not ship it.
-- **`dot_claude/CLAUDE.md` has a hard 90-line ceiling**, enforced by
-  `run_before_05-claude-md-size.sh` on every apply. It is read in full at the start of
-  every session in every project, and nothing else in this repo evicts from it. Over
-  the line means move content to where it is paid for on demand: a skill, the owning
-  repo's own `AGENTS.md`, or mem0. Raise `MAX_LINES` only on purpose.
+- **`lean-ctx` rewrites its CLAUDE.md blocks whenever the server starts**, not only
+  at `init` — same deal as its three hook entries in `settings.json`. So
+  `dot_claude/CLAUDE.md` must carry the `<!-- lean-ctx -->` and
+  `<!-- lean-ctx-solution -->` blocks exactly as lean-ctx writes them; condensing them
+  just makes the target drift back within one session. Re-check after a version bump.
 - **Scripts here re-run on every content change**, so each block guards on its own
   result (`statusLine` present, plugin already in `installed_plugins.json`, skill dir
   exists). Without the guards an apply took minutes and left the target dirty.
