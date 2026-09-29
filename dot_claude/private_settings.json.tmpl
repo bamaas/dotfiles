@@ -164,16 +164,6 @@
       {
         "hooks": [
           {
-            "command": "\"$HOME/.local/share/mise/shims/node\" \"$HOME/.claude/hooks/caveman-activate.js\"",
-            "statusMessage": "Loading caveman mode...",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
             "command": "\"$HOME/.local/share/mise/shims/lean-ctx\" hook observe",
             "type": "command"
           }
@@ -205,16 +195,6 @@
         "hooks": [
           {
             "command": "[ -n \"$SUPERSET_HOME_DIR\" ] && [ -x \"$SUPERSET_HOME_DIR/hooks/notify.sh\" ] && SUPERSET_AGENT_ID=claude \"$SUPERSET_HOME_DIR/hooks/notify.sh\" || true",
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "\"$HOME/.local/share/mise/shims/node\" \"$HOME/.claude/hooks/caveman-mode-tracker.js\"",
-            "statusMessage": "Tracking caveman mode...",
-            "timeout": 5,
             "type": "command"
           }
         ]

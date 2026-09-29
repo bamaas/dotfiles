@@ -107,21 +107,14 @@ if command -v claude >/dev/null 2>&1 \
   claude plugin install caveman@caveman -s user >/dev/null 2>&1 || true
 fi
 
-# The caveman SessionStart/UserPromptSubmit hooks in settings.json run from
-# ~/.claude/hooks/. The plugin ships them under its versioned cache dir, so copy
-# the newest build out instead of vendoring third-party JS in this repo.
-# installPath is authoritative: the cache can hold other versions that are newer
-# on disk than the one actually installed, so never pick by mtime here.
-CAVEMAN_ROOT="$(yq -p json -r '.plugins."caveman@caveman"[0].installPath // ""' \
-  "$HOME/.claude/plugins/installed_plugins.json" 2>/dev/null)"
-CAVEMAN_SRC="${CAVEMAN_ROOT:+$CAVEMAN_ROOT/src/hooks}"
-[ -d "${CAVEMAN_SRC:-}" ] || CAVEMAN_SRC=""
-if [ -n "$CAVEMAN_SRC" ]; then
-  mkdir -p "$HOME/.claude/hooks"
-  for f in caveman-activate.js caveman-mode-tracker.js caveman-config.js; do
-    [ -f "$CAVEMAN_SRC/$f" ] && cp "$CAVEMAN_SRC/$f" "$HOME/.claude/hooks/$f"
-  done
-fi
+# The plugin registers its own SessionStart/UserPromptSubmit hooks from
+# .claude-plugin/plugin.json, so settings.json must NOT register them a second
+# time: both copies fire and every prompt carries the caveman preamble twice.
+# Nothing to copy out of the plugin cache either — the plugin runs its hooks
+# from its own src/hooks/.
+rm -f "$HOME/.claude/hooks/caveman-activate.js" \
+      "$HOME/.claude/hooks/caveman-mode-tracker.js" \
+      "$HOME/.claude/hooks/caveman-config.js"
 
 # --- mem0 memory MCP (hosted: https://mcp.mem0.ai/mcp) ----------------------
 # One memory backend on purpose. The `mem0@mem0-plugins` Claude Code plugin is
