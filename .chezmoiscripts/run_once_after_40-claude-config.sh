@@ -13,6 +13,13 @@ export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
 mkdir -p "$HOME/.claude"
 
+# Undo an installer's edit to a file this repo owns. Only safe for plain sources:
+# a .tmpl source would be copied as unrendered template text.
+restore_from_source() {
+  [ -f "${CHEZMOI_SOURCE_DIR:-}/$1" ] && cp "$CHEZMOI_SOURCE_DIR/$1" "$2"
+  return 0
+}
+
 # --- container-only: seed theme + onboarding --------------------------------
 if [ -n "${DEVCONTAINER:-}" ] || [ -f /.dockerenv ]; then
   # theme (only if not already set)
@@ -37,9 +44,12 @@ if [ -x "$LEANCTX_BIN" ] && command -v claude >/dev/null 2>&1; then
     -- "$LEANCTX_BIN" >/dev/null 2>&1 || true
 
   # `lean-ctx init` seeds ~/.claude/skills/lean-ctx, so its absence means first run.
-  # It also rewrites its hook entries in settings.json to absolute versioned paths
-  # and relocates the zshrc hook block — this repo owns both files, so restore them
-  # afterwards (a nested `chezmoi apply` would deadlock).
+  # It also rewrites its hook entries in settings.json to absolute versioned paths,
+  # relocates the zshrc hook block, and appends its own instruction blocks to
+  # CLAUDE.md — this repo owns all three, so restore them afterwards (a nested
+  # `chezmoi apply` would deadlock). The CLAUDE.md here is a condensed rewrite:
+  # the MCP server already states the ctx_* mapping at runtime, so re-adding the
+  # upstream block would pay for it twice.
   # settings.json is restored from the applied target, not from the source dir:
   # the source is dot_claude/private_settings.json.tmpl (OS-conditional deny list),
   # so copying it raw would write template text instead of JSON. Files are applied
@@ -56,7 +66,8 @@ if [ -x "$LEANCTX_BIN" ] && command -v claude >/dev/null 2>&1; then
       chmod 600 "$HOME/.claude/settings.json"
       rm -f "$settings_bak"
     fi
-    [ -f "${CHEZMOI_SOURCE_DIR:-}/dot_zshrc" ] && cp "$CHEZMOI_SOURCE_DIR/dot_zshrc" "$HOME/.zshrc"
+    restore_from_source dot_zshrc "$HOME/.zshrc"
+    restore_from_source dot_claude/CLAUDE.md "$HOME/.claude/CLAUDE.md"
   fi
 fi
 
@@ -153,8 +164,9 @@ fi
 
 # --- graphify codebase knowledge graph (pipx:graphifyy, installed by mise) ---
 # Registers the /graphify skill in ~/.claude/skills/graphify. The installer also
-# appends a marker block to ~/.claude/CLAUDE.md; that block already lives in
-# dot_claude/CLAUDE.md and the installer is idempotent, so it will not duplicate.
+# appends a `## graphify` block to ~/.claude/CLAUDE.md restating the skill's own
+# description — restore our copy, the skill listing already carries that.
 if command -v graphify >/dev/null 2>&1 && [ ! -f "$HOME/.claude/skills/graphify/SKILL.md" ]; then
   graphify install --platform claude >/dev/null 2>&1 || true
+  restore_from_source dot_claude/CLAUDE.md "$HOME/.claude/CLAUDE.md"
 fi
