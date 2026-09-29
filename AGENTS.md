@@ -44,9 +44,21 @@ half.
 ## Gotchas that have already bitten
 
 - **Installers write into managed files.** `graphify install` appends to
-  `~/.claude/CLAUDE.md`; `lean-ctx init` rewrites hooks in `~/.claude/settings.json`
-  and relocates its block in `~/.zshrc`. After running one, copy the change back into
-  the source or the next apply reverts it.
+  `~/.claude/CLAUDE.md`; `lean-ctx init` rewrites hooks in `~/.claude/settings.json`,
+  relocates its block in `~/.zshrc`, and appends to `~/.claude/CLAUDE.md` too. Script
+  40 undoes each one via `restore_from_source` — only ever pass it a plain source, a
+  `.tmpl` would be copied as unrendered template text. Run an installer by hand and
+  you must copy the change back yourself, or the next apply reverts it.
+- **A plugin's own hooks are already registered.** `.claude-plugin/plugin.json` can
+  declare `SessionStart`/`UserPromptSubmit`, and `settings.json` declaring the same
+  hook again does not replace it — both fire. That is how the caveman preamble was
+  injected twice per session and its reminder twice per prompt. Before adding a hook
+  to `dot_claude/private_settings.json.tmpl`, check the plugin does not ship it.
+- **`dot_claude/CLAUDE.md` has a hard 90-line ceiling**, enforced by
+  `run_before_05-claude-md-size.sh` on every apply. It is read in full at the start of
+  every session in every project, and nothing else in this repo evicts from it. Over
+  the line means move content to where it is paid for on demand: a skill, the owning
+  repo's own `AGENTS.md`, or mem0. Raise `MAX_LINES` only on purpose.
 - **Scripts here re-run on every content change**, so each block guards on its own
   result (`statusLine` present, plugin already in `installed_plugins.json`, skill dir
   exists). Without the guards an apply took minutes and left the target dirty.
