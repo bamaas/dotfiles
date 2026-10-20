@@ -30,7 +30,7 @@ if [ -n "${DEVCONTAINER:-}" ] || [ -f /.dockerenv ]; then
   fi
 fi
 
-# --- lean-ctx MCP server (npm:lean-ctx-bin, installed via mise) --------------
+# --- lean-ctx MCP server (github:yvgude/lean-ctx, installed via mise) --------
 # Registers the same stdio server the host uses. Local config only (no API/auth
 # needed at build time). Absolute binary path via `mise which` so the MCP launch
 # doesn't depend on PATH. `lean-ctx init` seeds the agent instructions + skill.
