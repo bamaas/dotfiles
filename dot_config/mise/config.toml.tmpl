@@ -32,7 +32,7 @@ pi = "latest"            # pi coding agent (earendil-works/pi)
 # kubernetes tooling (wanted in containers too)
 kubectl = "1.29.11"
 "aqua:derailed/k9s" = "0.32.7"
-"asdf:Antiarchitect/asdf-helm" = "3.16.3"   # default `helm`/aqua backend has a broken URL
+helm = "4.3.0"
 
 {{- if not (env "DEVCONTAINER") }}
 
@@ -59,7 +59,6 @@ yamllint = "1.37.0"
 "pipx:graphifyy" = "latest"   # /graphify codebase knowledge graph (binary: graphify)
 poetry = "latest"
 zarf = "latest"
-helm = "latest"
 {{- end }}
 
 [settings]
