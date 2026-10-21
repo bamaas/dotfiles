@@ -40,6 +40,9 @@ LEANCTX_BIN="$HOME/.local/share/mise/shims/lean-ctx"
 if [ -x "$LEANCTX_BIN" ] && command -v claude >/dev/null 2>&1; then
   # `-e` is variadic, so the server name has to come before it and the command
   # after `--`; the old argument order made this silently fail every run.
+  # Remove first: `add` is a no-op on an existing entry, and lean-ctx rewrites
+  # that entry to its versioned install path, which a reinstall deletes.
+  claude mcp remove lean-ctx -s user >/dev/null 2>&1 || true
   claude mcp add lean-ctx -s user -e "LEAN_CTX_DATA_DIR=$HOME/.lean-ctx" \
     -- "$LEANCTX_BIN" >/dev/null 2>&1 || true
 
