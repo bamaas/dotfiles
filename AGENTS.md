@@ -9,7 +9,7 @@ overwrites it.
 | Source | Target |
 |---|---|
 | `dot_claude/CLAUDE.md` | `~/.claude/CLAUDE.md` |
-| `dot_claude/private_settings.json.tmpl` | `~/.claude/settings.json` (mode 600) |
+| `.chezmoitemplates/claude-settings.json` | `~/.claude/settings.json` (mode 600), via `dot_claude/modify_private_settings.json` |
 | `dot_claude/hooks/executable_*` | `~/.claude/hooks/*` |
 | `dot_config/...` | `~/.config/...` |
 | `dot_config/mise/config.toml.tmpl` | `~/.config/mise/config.toml` (all tool installs) |
@@ -36,7 +36,7 @@ Never commit one. Machine-local secrets live in
 them from the env, e.g. `MEM0_API_KEY`.
 
 Claude Code settings are split for this reason: portable keys in
-`dot_claude/private_settings.json.tmpl`, machine-local ones (`mcpServers`, anything
+`.chezmoitemplates/claude-settings.json`, machine-local ones (`mcpServers`, anything
 with a key in it) in `~/.claude/settings.local.json`, which Claude Code merges on top
 and chezmoi ignores. Never move an MCP server with a key in its URL into the tracked
 half.
@@ -53,7 +53,7 @@ half.
   declare `SessionStart`/`UserPromptSubmit`, and `settings.json` declaring the same
   hook again does not replace it — both fire. That is how the caveman preamble was
   injected twice per session and its reminder twice per prompt. Before adding a hook
-  to `dot_claude/private_settings.json.tmpl`, check the plugin does not ship it.
+  to `.chezmoitemplates/claude-settings.json`, check the plugin does not ship it.
 - **`lean-ctx` rewrites its CLAUDE.md blocks whenever the server starts**, not only
   at `init` — same deal as its three hook entries in `settings.json`. So
   `dot_claude/CLAUDE.md` must carry the `<!-- lean-ctx -->` and
@@ -71,10 +71,14 @@ half.
 - **lean-ctx rewrites its own three hook entries** in `~/.claude/settings.json` to its
   resolved binary path whenever the server starts. The tracked copy matches what it
   writes; after a lean-ctx version bump, hand-edit those three `command` strings in
-  `dot_claude/private_settings.json.tmpl`. Do **not** `chezmoi add
+  `.chezmoitemplates/claude-settings.json`. Do **not** `chezmoi add
   ~/.claude/settings.json` any more: the source is a template and `add` would
   overwrite it with the rendered target, silently flattening the OS conditionals
   (on Linux that also means permanently losing the 34 macOS-only deny rules).
+- **Claude Code and lean-ctx re-serialize `~/.claude/settings.json`** in their own
+  key order, which used to show up as drift and block `chezmoi apply` on a TTY
+  prompt. `dot_claude/modify_private_settings.json` keeps the live file when it is
+  equal as JSON and only writes the template on a real content change.
 - **`~/.claude/settings.json` is OS-conditional.** Its deny list drops 34 local-only
   rules (`sudo`, `systemctl`, `brew`, `dd`, the `Read(**/.ssh/*)` family …) on Linux,
   because a deny always beats an allow so the entry has to be absent, not overridden.
@@ -84,8 +88,8 @@ half.
   is: every deny entry ends with a comma except the final `"Glob"`, and that last
   one sits outside any conditional. Adding an entry at the end of a guarded block is
   fine; making a guarded block the *last* thing in the array is not. Verify both
-  branches before committing — `chezmoi execute-template < the .tmpl | jq empty`
-  locally for macOS and `ssh devbox chezmoi execute-template < the .tmpl | jq empty`
+  branches before committing — `chezmoi execute-template < .chezmoitemplates/claude-settings.json | jq empty`
+  locally for macOS and `ssh devbox chezmoi execute-template < .chezmoitemplates/claude-settings.json | jq empty`
   for Linux (`.chezmoi.os` comes from the running machine, so one host cannot render
   both).
 - **Hook commands** use `$HOME` and the mise shims

@@ -1,0 +1,13 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /*
+  Claude Code and lean-ctx re-serialize settings.json in their own key order.
+  When the live file only differs in key order or whitespace, keep it as-is so
+  `chezmoi status` stays clean; any real content difference is still applied.
+  The settings themselves live in .chezmoitemplates/claude-settings.json.
+*/ -}}
+{{- $desired := includeTemplate "claude-settings.json" . -}}
+{{- if and .chezmoi.stdin (eq (.chezmoi.stdin | fromJson | toJson) ($desired | fromJson | toJson)) -}}
+{{- .chezmoi.stdin -}}
+{{- else -}}
+{{- $desired -}}
+{{- end -}}
