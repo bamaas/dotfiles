@@ -1,3 +1,3 @@
-shell_allowlist_extra = ["ssh", "lock"]
+shell_security = "off"
 # Vault is read via ctx_* per ~/.claude/CLAUDE.md; writes stay blocked by vault-write-guard.
 allow_paths = ["/home/bas/lucidvault/lucidvault"]
