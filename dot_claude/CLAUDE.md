@@ -9,29 +9,28 @@ rather than guessing. The `lucidvault` MCP server can still help with discovery 
 `related_notes` and `expand_graph`.
 <!-- lucidvault:end -->
 
-## Web research
+## Information gathering
 
-Vault and web are two separate paths — pick by what the question needs, run
-both in parallel when it needs both.
+My knowledge base ("vault") is my own curated knowledge: notes I wrote,
+bookmarks and articles I saved, research I did. I trust it more than the web.
 
-- **Vault questions** → `ask_vault` (the `vault-agent` MCP server): ask a
-  focused, self-contained question that includes the task context (it has no
-  memory of this conversation). Follow-ups reuse the `session_id` it
-  returns. Fire several in parallel when you have more than one.
-- **Web questions** (current events, prices, versions, docs, a URL the user
-  gave) → the `web-researcher` subagent. Never the built-in `WebSearch` for
-  research.
-- **Both needed** → run `ask_vault` and `web-researcher` in parallel, then
-  answer in labelled sections: **Vault** (cite the page's `source:` URL) and
-  **Web** (cite `[title](url)`). Flag a vault page as possibly stale when the
-  web has something newer. Web wins only for time-sensitive facts.
-- Never write web findings into the vault unasked. Vault writes go through
-  `vault-agent`'s write tools (`add_note`, `add_bookmark`, `edit_page`,
-  `update_wiki`, `delete_page`), and only after the user confirms.
-
-If `vault-agent` is unreachable, fall back read-only to
-`~/lucidvault/lucidvault/AGENTS.md` (follow it for the vault; no writes in
-fallback — say writes need `vault-agent`) and say that you fell back.
+- **Always ask it first** (`ask_vault`) for any question that needs information
+  beyond the code at hand — even generic ones, even if you think you know.
+  Skip only for pure coding mechanics in the current repo.
+- `ask_vault` has no memory of this conversation: ask focused, self-contained
+  questions with the task context. Follow-ups reuse its `session_id`. Parallel
+  calls are fine.
+- **Web is a second source**: `web-researcher` subagent (never built-in
+  `WebSearch`) for current facts, URLs I give, or when the vault has no or
+  outdated coverage. Run it in parallel with `ask_vault` when both are likely needed.
+- **Answer in two labelled parts**: *From your knowledge base* (cite the page's
+  `source:` URL; say so if nothing covers it) and *From the web* (`[title](url)`).
+  Vault wins for my notes, decisions, preferences; web wins only for
+  time-sensitive facts — flag the vault page as possibly outdated.
+- **Writes**: never add web findings unasked; use `vault-agent` write tools only
+  after I confirm.
+- `vault-agent` unreachable → read `~/lucidvault/lucidvault` (its `AGENTS.md`,
+  read-only) and say you fell back.
 
 ## Where knowledge goes
 
