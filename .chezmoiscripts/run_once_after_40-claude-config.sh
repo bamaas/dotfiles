@@ -150,6 +150,15 @@ if command -v claude >/dev/null 2>&1 && [ -n "${TAVILY_API_KEY:-}" ]; then
     "https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY" >/dev/null 2>&1 || true
 fi
 
+# --- jina MCP (hosted: https://mcp.jina.ai/v1) ------------------------------
+# Keyless (no API key in the URL or a header), so no env-var guard needed —
+# `include_tools=read_url` scopes the remote server to just read_url, the only
+# tool the web-researcher subagent uses it for.
+if command -v claude >/dev/null 2>&1; then
+  claude mcp add -s user --transport http jina \
+    "https://mcp.jina.ai/v1?include_tools=read_url" >/dev/null 2>&1 || true
+fi
+
 # --- lucidvault direct MCP: removed ------------------------------------------
 # Port 8080 is now closed to the LAN; vault-agent (below) proxies the write
 # tools through its own auth. Idempotent removal so existing machines drop

@@ -11,19 +11,27 @@ rather than guessing. The `lucidvault` MCP server can still help with discovery 
 
 ## Web research
 
-Vault, web, or URL questions all go to `ask_vault` (the `vault-agent` MCP
-server): ask it a focused question, fire several in parallel when you have
-more than one, and cite what it returns.
+Vault and web are two separate paths — pick by what the question needs, run
+both in parallel when it needs both.
 
-Vault changes go to `vault-agent`'s write tools, passed through to
-LucidVault unchanged: `add_note`, `add_bookmark`, `edit_page`, `update_wiki`,
-`delete_page`.
+- **Vault questions** → `ask_vault` (the `vault-agent` MCP server): ask a
+  focused, self-contained question that includes the task context (it has no
+  memory of this conversation). Follow-ups reuse the `session_id` it
+  returns. Fire several in parallel when you have more than one.
+- **Web questions** (current events, prices, versions, docs, a URL the user
+  gave) → the `web-researcher` subagent. Never the built-in `WebSearch` for
+  research.
+- **Both needed** → run `ask_vault` and `web-researcher` in parallel, then
+  answer in labelled sections: **Vault** (cite the page's `source:` URL) and
+  **Web** (cite `[title](url)`). Flag a vault page as possibly stale when the
+  web has something newer. Web wins only for time-sensitive facts.
+- Never write web findings into the vault unasked. Vault writes go through
+  `vault-agent`'s write tools (`add_note`, `add_bookmark`, `edit_page`,
+  `update_wiki`, `delete_page`), and only after the user confirms.
 
-If `vault-agent` is unreachable, fall back to the old local route — read
-`~/lucidvault/lucidvault/AGENTS.md` and follow it for the vault (read-only;
-no vault writes in fallback — say writes need `vault-agent`), Tavily MCP
-(`tavily-search` / `tavily-extract`) and `curl -s "https://r.jina.ai/<URL>"`
-for the web — and say that you fell back.
+If `vault-agent` is unreachable, fall back read-only to
+`~/lucidvault/lucidvault/AGENTS.md` (follow it for the vault; no writes in
+fallback — say writes need `vault-agent`) and say that you fell back.
 
 ## Where knowledge goes
 
@@ -63,6 +71,7 @@ Where to look, per question. Pick one; never search two for the same thing.
 | Why this repo does X / what it rejected | `docs/adr/` | read it; git history for the rest |
 | My preferences / my past gotcha / a decision only I hold | mem0 | `mcp__mem0-mcp__search_memories` |
 | My notes, bookmarks, saved articles, research | lucidvault | `ask_vault` (vault-agent); local fallback if unreachable |
+| Current events, prices, versions, docs, a given URL | the web | `web-researcher` subagent, never built-in `WebSearch` |
 
 - Search mem0 before answering or acting. Don't repeat a mistake it records; don't
   make me re-explain a decision.
