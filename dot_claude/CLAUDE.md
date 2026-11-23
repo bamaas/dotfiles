@@ -20,7 +20,8 @@ LucidVault unchanged: `add_note`, `add_bookmark`, `edit_page`, `update_wiki`,
 `delete_page`.
 
 If `vault-agent` is unreachable, fall back to the old local route — read
-`~/lucidvault/lucidvault/AGENTS.md` and follow it for the vault, Tavily MCP
+`~/lucidvault/lucidvault/AGENTS.md` and follow it for the vault (read-only;
+no vault writes in fallback — say writes need `vault-agent`), Tavily MCP
 (`tavily-search` / `tavily-extract`) and `curl -s "https://r.jina.ai/<URL>"`
 for the web — and say that you fell back.
 

@@ -150,19 +150,12 @@ if command -v claude >/dev/null 2>&1 && [ -n "${TAVILY_API_KEY:-}" ]; then
     "https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY" >/dev/null 2>&1 || true
 fi
 
-# --- lucidvault knowledge-vault MCP (LAN: 192.168.8.173:8080) ---------------
-# No auth: the server is unauthenticated and LAN-only, so the URL is the whole
-# config and is safe to commit. Registered unconditionally, NOT behind a
-# reachability probe: a dead HTTP server costs only a "failed to connect" line
-# that self-heals the moment the machine is back on the LAN, whereas a probe
-# would silently skip registration on every rebuild done off-LAN (e.g. over VPN,
-# where .173 has timed out before) and leave the vault unwritable.
-# Unwritable is the real failure mode: the vault's write-guard refuses direct
-# file writes and points at this server's tools (update_wiki / add_note /
-# add_bookmark / delete_page), so without it there is no write path at all.
+# --- lucidvault direct MCP: removed ------------------------------------------
+# Port 8080 is now closed to the LAN; vault-agent (below) proxies the write
+# tools through its own auth. Idempotent removal so existing machines drop
+# the stale entry on the next apply.
 if command -v claude >/dev/null 2>&1; then
-  claude mcp add -s user --transport http lucidvault \
-    http://192.168.8.173:8080/mcp >/dev/null 2>&1 || true
+  claude mcp remove -s user lucidvault >/dev/null 2>&1 || true
 fi
 
 # --- vault-agent MCP (LAN: 192.168.8.173:8765) ------------------------------
@@ -170,14 +163,20 @@ fi
 # restricted agent) plus LucidVault's 5 write tools (add_note / add_bookmark /
 # edit_page / update_wiki / delete_page), proxied through unchanged. Search
 # logic lives only on the server now; this laptop's CLAUDE.md just calls
-# ask_vault. Same no-auth reasoning as lucidvault above: LAN-only, so the URL
-# is the whole config and safe to commit. Registered unconditionally, not
-# behind a reachability probe, for the same self-healing reason as lucidvault.
-# The direct `lucidvault` entry above stays registered until vault-agent is
-# validated — removing it is a separate, later decision.
-if command -v claude >/dev/null 2>&1; then
+# ask_vault. Auth now required: the server is no longer unauthenticated, so
+# the bearer token travels in the Authorization header, same shape as mem0
+# above. VAULT_AGENT_TOKEN comes from ~/.config/mise/conf.d/secrets.local.toml
+# (never committed); skipped silently when the secret is not in the env (e.g.
+# dev containers).
+# Remove first: unlike mem0/tavily above, this token is expected to rotate,
+# and `claude mcp add` is a no-op on an existing entry (same lean-ctx gotcha
+# higher up in this file) — without removing first, a rotated
+# VAULT_AGENT_TOKEN would never reach an already-registered entry.
+if command -v claude >/dev/null 2>&1 && [ -n "${VAULT_AGENT_TOKEN:-}" ]; then
+  claude mcp remove -s user vault-agent >/dev/null 2>&1 || true
   claude mcp add -s user --transport http vault-agent \
-    http://192.168.8.173:8765/mcp >/dev/null 2>&1 || true
+    http://192.168.8.173:8765/mcp \
+    --header "Authorization: Bearer $VAULT_AGENT_TOKEN" >/dev/null 2>&1 || true
 fi
 
 # --- graphify codebase knowledge graph (pipx:graphifyy, installed by mise) ---
