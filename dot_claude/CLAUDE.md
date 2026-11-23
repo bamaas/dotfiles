@@ -1,14 +1,3 @@
-<!-- lucidvault:start -->
-## My personal knowledge vault
-
-When I ask about my own notes, bookmarks, or saved articles (or say "vault"), read it
-directly from `~/lucidvault/lucidvault/` — start with that folder's `AGENTS.md` and
-follow it (source of truth for how to search and cite).
-If that directory does not exist, the vault is not present on this machine: say so
-rather than guessing. The `lucidvault` MCP server can still help with discovery via
-`related_notes` and `expand_graph`.
-<!-- lucidvault:end -->
-
 ## Information gathering
 
 My knowledge base ("vault") is my own curated knowledge: notes I wrote,
