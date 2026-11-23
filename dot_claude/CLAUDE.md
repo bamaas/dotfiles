@@ -11,32 +11,18 @@ rather than guessing. The `lucidvault` MCP server can still help with discovery 
 
 ## Web research
 
-Use these tools according to intent.
+Vault, web, or URL questions all go to `ask_vault` (the `vault-agent` MCP
+server): ask it a focused question, fire several in parallel when you have
+more than one, and cite what it returns.
 
-### Reading a provided URL
+Vault changes go to `vault-agent`'s write tools, passed through to
+LucidVault unchanged: `add_note`, `add_bookmark`, `edit_page`, `update_wiki`,
+`delete_page`.
 
-- Fetch it first with `curl -s "https://r.jina.ai/<URL>"`.
-- Use the returned Markdown as the source.
-- Do not use Tavily for URLs I already provided unless Jina fails.
-
-### Web search
-
-Any substantive or factual question runs two lanes in parallel:
-
-1. **Vault** — retrieval strategy lives in `~/lucidvault/lucidvault/AGENTS.md`;
-   follow it. No hit → say "nothing in your vault covers this" before answering
-   from the web.
-2. **Web** — Tavily MCP (`tavily-search` / `tavily-extract`), never the built-in
-   WebSearch. Search, then Jina extract. Prefer Tavily over general browsing.
-
-Neither lane leads by default — weigh them per question, and say which parts came
-from where. Cite each lane separately; a vault answer must carry the page's
-`source:` URL verbatim. Flag a vault page as possibly stale when the web has
-something newer than its `last_updated`.
-
-### Multiple sources
-
-Tavily to discover the URLs, Jina to extract each one.
+If `vault-agent` is unreachable, fall back to the old local route — read
+`~/lucidvault/lucidvault/AGENTS.md` and follow it for the vault, Tavily MCP
+(`tavily-search` / `tavily-extract`) and `curl -s "https://r.jina.ai/<URL>"`
+for the web — and say that you fell back.
 
 ## Where knowledge goes
 
@@ -75,7 +61,7 @@ Where to look, per question. Pick one; never search two for the same thing.
 | Architecture, multi-hop paths, code+docs+SQL in one view | graphify | `/graphify query "..."` — only where `graphify-out/` exists and is current |
 | Why this repo does X / what it rejected | `docs/adr/` | read it; git history for the rest |
 | My preferences / my past gotcha / a decision only I hold | mem0 | `mcp__mem0-mcp__search_memories` |
-| My notes, bookmarks, saved articles, research | lucidvault | read the vault directly |
+| My notes, bookmarks, saved articles, research | lucidvault | `ask_vault` (vault-agent); local fallback if unreachable |
 
 - Search mem0 before answering or acting. Don't repeat a mistake it records; don't
   make me re-explain a decision.

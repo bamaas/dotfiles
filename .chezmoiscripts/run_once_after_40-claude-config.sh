@@ -165,6 +165,21 @@ if command -v claude >/dev/null 2>&1; then
     http://192.168.8.173:8080/mcp >/dev/null 2>&1 || true
 fi
 
+# --- vault-agent MCP (LAN: 192.168.8.173:8765) ------------------------------
+# One endpoint for `ask_vault` (vault + web research, run by the server's own
+# restricted agent) plus LucidVault's 5 write tools (add_note / add_bookmark /
+# edit_page / update_wiki / delete_page), proxied through unchanged. Search
+# logic lives only on the server now; this laptop's CLAUDE.md just calls
+# ask_vault. Same no-auth reasoning as lucidvault above: LAN-only, so the URL
+# is the whole config and safe to commit. Registered unconditionally, not
+# behind a reachability probe, for the same self-healing reason as lucidvault.
+# The direct `lucidvault` entry above stays registered until vault-agent is
+# validated — removing it is a separate, later decision.
+if command -v claude >/dev/null 2>&1; then
+  claude mcp add -s user --transport http vault-agent \
+    http://192.168.8.173:8765/mcp >/dev/null 2>&1 || true
+fi
+
 # --- graphify codebase knowledge graph (pipx:graphifyy, installed by mise) ---
 # Registers the /graphify skill in ~/.claude/skills/graphify. The installer also
 # appends a `## graphify` block to ~/.claude/CLAUDE.md restating the skill's own
