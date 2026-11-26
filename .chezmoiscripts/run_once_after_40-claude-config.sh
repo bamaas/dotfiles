@@ -54,7 +54,7 @@ if [ -x "$LEANCTX_BIN" ] && command -v claude >/dev/null 2>&1; then
   # the MCP server already states the ctx_* mapping at runtime, so re-adding the
   # upstream block would pay for it twice.
   # settings.json is restored from the applied target, not from the source dir:
-  # the source is dot_claude/private_settings.json.tmpl (OS-conditional deny list),
+  # the source is .chezmoitemplates/claude-settings.json (OS-conditional deny list),
   # so copying it raw would write template text instead of JSON. Files are applied
   # before run_once_after scripts, so the target is already the rendered copy.
   if [ ! -d "$HOME/.claude/skills/lean-ctx" ]; then
