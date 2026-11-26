@@ -100,12 +100,14 @@ q(){
 # pbcopy / pbpaste on Linux (no-op on macOS)
 if (( ! $+commands[pbcopy] )); then
   pbcopy() {
+    # $(cat) drops trailing newlines, so `pwd | pbcopy` pastes without one
+    local data=$(cat)
     if [[ -n $SSH_TTY || -n $SSH_CONNECTION ]]; then
-      printf '\033]52;c;%s\a' "$(base64 | tr -d '\n')" > /dev/tty
+      printf '\033]52;c;%s\a' "$(printf '%s' "$data" | base64 | tr -d '\n')" > /dev/tty
     elif [[ -n $WAYLAND_DISPLAY ]] && (( $+commands[wl-copy] )); then
-      wl-copy
+      printf '%s' "$data" | wl-copy
     elif [[ -n $DISPLAY ]] && (( $+commands[xclip] )); then
-      xclip -selection clipboard
+      printf '%s' "$data" | xclip -selection clipboard
     else
       print -u2 "pbcopy: no clipboard available"; return 1
     fi
