@@ -175,13 +175,16 @@ fi
 # ask_vault. Auth now required: the server is no longer unauthenticated, so
 # the bearer token travels in the Authorization header, same shape as mem0
 # above. VAULT_AGENT_TOKEN comes from ~/.config/mise/conf.d/secrets.local.toml
-# (never committed); skipped silently when the secret is not in the env (e.g.
-# dev containers).
+# (never committed). A missing token warns instead of failing: dev containers
+# have no token and must still apply. Before the warning, the skip was silent
+# and left CLAUDE.md pointing at an ask_vault that was never registered.
 # Remove first: unlike mem0/tavily above, this token is expected to rotate,
 # and `claude mcp add` is a no-op on an existing entry (same lean-ctx gotcha
 # higher up in this file) — without removing first, a rotated
 # VAULT_AGENT_TOKEN would never reach an already-registered entry.
-if command -v claude >/dev/null 2>&1 && [ -n "${VAULT_AGENT_TOKEN:-}" ]; then
+if command -v claude >/dev/null 2>&1 && [ -z "${VAULT_AGENT_TOKEN:-}" ]; then
+  echo "warning: VAULT_AGENT_TOKEN not set, vault-agent MCP not registered; add it to ~/.config/mise/conf.d/secrets.local.toml and re-run chezmoi apply" >&2
+elif command -v claude >/dev/null 2>&1; then
   claude mcp remove -s user vault-agent >/dev/null 2>&1 || true
   claude mcp add -s user --transport http vault-agent \
     http://192.168.8.173:8765/mcp \
