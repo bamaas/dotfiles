@@ -96,3 +96,30 @@ q(){
   claude --model opus -p "$*"
 }
 
+
+# pbcopy / pbpaste on Linux (no-op on macOS)
+if (( ! $+commands[pbcopy] )); then
+  pbcopy() {
+    if [[ -n $SSH_TTY || -n $SSH_CONNECTION ]]; then
+      printf '\033]52;c;%s\a' "$(base64 | tr -d '\n')" > /dev/tty
+    elif [[ -n $WAYLAND_DISPLAY ]] && (( $+commands[wl-copy] )); then
+      wl-copy
+    elif [[ -n $DISPLAY ]] && (( $+commands[xclip] )); then
+      xclip -selection clipboard
+    else
+      print -u2 "pbcopy: no clipboard available"; return 1
+    fi
+  }
+fi
+
+if (( ! $+commands[pbpaste] )); then
+  pbpaste() {
+    if [[ -n $WAYLAND_DISPLAY ]] && (( $+commands[wl-paste] )); then
+      wl-paste --no-newline
+    elif [[ -n $DISPLAY ]] && (( $+commands[xclip] )); then
+      xclip -selection clipboard -o
+    else
+      print -u2 "pbpaste: no clipboard available (over SSH, use Cmd+V)"; return 1
+    fi
+  }
+fi
