@@ -59,6 +59,11 @@ half.
   `dot_claude/CLAUDE.md` must carry the `<!-- lean-ctx -->` and
   `<!-- lean-ctx-solution -->` blocks exactly as lean-ctx writes them; condensing them
   just makes the target drift back within one session. Re-check after a version bump.
+- **lean-ctx config lives in `~/.config/lean-ctx/config.toml`** (XDG layout, pinned
+  by lean-ctx in `layout.toml`), source `dot_config/private_lean-ctx/`. The legacy
+  `~/.lean-ctx/config.toml` is ignored and gets removed by lean-ctx. Never pass
+  `LEAN_CTX_DATA_DIR` to the MCP server: it made the server read the legacy file
+  while the CLI and hooks read the XDG one, so `ctx_*` silently ran on defaults.
 - **Scripts here re-run on every content change**, so each block guards on its own
   result (`statusLine` present, plugin already in `installed_plugins.json`, skill dir
   exists). Without the guards an apply took minutes and left the target dirty.
