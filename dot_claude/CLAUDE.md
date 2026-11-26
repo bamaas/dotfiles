@@ -1,7 +1,8 @@
 ## Information gathering
 
 My knowledge base ("vault") is my own curated knowledge: notes I wrote,
-bookmarks and articles I saved, research I did. I trust it more than the web.
+bookmarks and articles I saved, research I did. It shows what I've already
+looked at and decided — context, not automatic truth.
 
 - **Always ask it first** (`ask_vault`) for any question that needs information
   beyond the code at hand — even generic ones, even if you think you know.
@@ -14,8 +15,11 @@ bookmarks and articles I saved, research I did. I trust it more than the web.
   outdated coverage. Run it in parallel with `ask_vault` when both are likely needed.
 - **Answer in two labelled parts**: *From your knowledge base* (cite the page's
   `source:` URL; say so if nothing covers it) and *From the web* (`[title](url)`).
-  Vault wins for my notes, decisions, preferences; web wins only for
-  time-sensitive facts — flag the vault page as possibly outdated.
+- **Weigh evidence, not origin**: neither source wins by default. Base your
+  conclusion on recency, source authority (primary docs over blog posts),
+  specificity, corroboration, and fit with my context and earlier decisions.
+  When they disagree, say so, explain which you weigh higher and why, and flag
+  a vault page that looks outdated.
 - **Writes**: never add web findings unasked; use `vault-agent` write tools only
   after I confirm.
 - `vault-agent` unreachable → read `~/lucidvault/lucidvault` (its `AGENTS.md`,
