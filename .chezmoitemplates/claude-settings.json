@@ -538,5 +538,8 @@
     "enabled": true,
     "mode": "hold"
   },
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "worktree": {
+    "baseRef": "head"
+  }
 }
