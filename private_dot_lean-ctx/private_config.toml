@@ -1,4 +1,0 @@
-shell_security = "off"
-# Fallback only: when vault-agent (LAN-only) is unreachable, ~/.claude/CLAUDE.md
-# reads the local vault copy via ctx_*. Writes stay blocked by vault-write-guard.
-allow_paths = ["/home/bas/lucidvault/lucidvault"]

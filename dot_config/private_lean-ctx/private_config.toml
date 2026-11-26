@@ -1,0 +1,4 @@
+shell_security = "off"
+# No path jail: ctx_* may read and write any path, like ctx_shell already can with
+# shell_security off. Vault writes stay blocked by the vault-write-guard hook.
+path_jail = false
