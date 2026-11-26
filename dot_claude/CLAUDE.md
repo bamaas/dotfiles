@@ -114,6 +114,7 @@ read its `AGENTS.md` first.
 - No placeholder code, stubs, fake data, or TODOs presented as finished work.
 - Commit in small logical steps with conventional commit messages. Never force-push
   or rewrite shared history.
+- Work in a worktree ends with push + PR (`gh` / `glab`); never merge to main locally.
 
 <!-- lean-ctx -->
 <!-- lean-ctx-claude-v9 -->

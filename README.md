@@ -15,7 +15,7 @@ Clones the repo, installs chezmoi, applies the configs, and installs [mise](http
 | Area | Path |
 |------|------|
 | zsh | `dot_zshrc`, `dot_zshenv`, `dot_zprofile`, `dot_zshrc_user`, `dot_profile` |
-| git | `dot_gitconfig`, `dot_gitignore_global` |
+| git | `dot_gitconfig`, `dot_config/git/ignore` |
 | nvim | `dot_config/nvim/` (NvChad; `lazy-lock.json` pins plugins) |
 | k9s | `dot_config/k9s/` (config + skins) |
 | mise | `dot_config/mise/config.toml` (the tool manifest) |
