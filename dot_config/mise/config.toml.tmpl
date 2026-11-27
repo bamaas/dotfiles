@@ -19,6 +19,10 @@ yq = "4.44.5"
 lazygit = "latest"
 gh = "latest"
 glab = "latest"
+# Gitea/Forgejo CLI. Not in mise's registry and only released on gitea.com, so the
+# forgejo backend (Gitea-compatible API) points at gitea.com. Pinned: the repo was
+# archived 2026-10-29 in favour of `gt`, 0.16.0 is the last release.
+"forgejo:gitea/tea" = { version = "0.16.0", api_url = "https://gitea.com/api/v1" }
 zellij = "latest"
 kind = "latest"
 starship = "latest"
